@@ -37,3 +37,15 @@ Input: unsigned 64-bit integers, ascending order; **not stable**. This API does 
 ## License
 
 **Proprietary — All Rights Reserved.** Copyright © 2026 Stamatis-Christos Saridakis. Source visibility does not grant rights to use, copy, modify, or distribute the code. See [LICENSE](LICENSE) for the full terms. Third-party dependencies remain governed by their own licenses.
+
+## Independent sorting competition — 20 October 2026
+
+[Read the direct comparison report](experiments/direct-sota-evidence/REPORT.md) and [inspect the two-runner summary CSV](experiments/direct-sota-evidence/summary_two_runners.csv).
+
+The pinned external-source benchmark compares RUNE v5 against CAFS (with pdqsort fallback), Highway VQSort, sequential IPS4o, Boost pdqsort/spreadsort, and C++ std::sort. All compared results passed exact-output checks against a reference sort. On the AMD EPYC 7763 GitHub runner, RUNE was fastest on **9 of 12** one-million-key workloads, with VQSort winning the other three. A separate six-sorter run on EPYC 9V74 showed CAFS outperforming RUNE on some cardinalities. These are CPU- and input-dependent results, **not proof of overall SOTA status**.
+
+- [Seven-algorithm GitHub Actions run](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39342894032)
+- [Six-algorithm GitHub Actions run](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39343309296)
+- [Reproduction harness](experiments/direct-competition.cpp)
+
+The existing [proprietary license](LICENSE) applies to the original RUNE source; external comparator implementations retain their respective upstream licenses and are downloaded during benchmark execution, not incorporated into the repository.
