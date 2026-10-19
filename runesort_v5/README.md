@@ -58,3 +58,7 @@ There is no cross-CPU confirmation or statistical significance claim. Some v5 re
 - `DESIGN_AND_EVIDENCE.md`: proof obligations, complexity, benchmark details, and prior art.
 
 **Not yet measured in this environment:** direct CAFS, IPS4o, or Google Highway VQSort runs. Existing CAFS work targets overlapping low-cardinality sorting; v5 cannot claim global novelty or SOTA without independent comparisons.
+
+## License
+
+**Proprietary — All Rights Reserved.** Copyright © 2026 Stamatis-Christos Saridakis. No permission to use, copy, modify, or distribute is granted without a separate written license, except as required by law. See the repository [LICENSE](../LICENSE). Third-party dependencies retain their respective licenses.
