@@ -1,0 +1,57 @@
+name: Fast CAFS and IPS4o comparison
+on:
+  push:
+    branches:
+      - experiment/direct-sota-comparison-20261020
+    paths:
+      - 'experiments/direct-cafs-ips4o.cpp'
+      - '.github/workflows/fast-cafs-ips4o.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download pinned sorters
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/rune-others
+          cd /tmp/rune-others
+          git init cafs
+          git -C cafs remote add origin https://github.com/kexibq-official/cafs-lib.git
+          git -C cafs fetch --depth 1 origin 13488afef446ae88e7ad631ec6f862def896094a
+          git -C cafs checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth 1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+      - name: Inspect hardware
+        run: |
+          lscpu | head -20
+          g++ --version | head -1
+          grep -qw avx2 /proc/cpuinfo
+          grep -Eqw 'bmi1|bmi' /proc/cpuinfo
+      - name: Build comparison
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libboost-dev
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune-others/cafs/include -I/tmp/rune-others/ips4o \
+            experiments/direct-cafs-ips4o.cpp -latomic -o /tmp/cafs-ips4o-bench
+      - name: Run exact-output benchmark at two scales
+        run: |
+          set -euo pipefail
+          mkdir -p experiment-results
+          /tmp/cafs-ips4o-bench 100000 4 | tee experiment-results/100k.csv
+          /tmp/cafs-ips4o-bench 1000000 4 | tee experiment-results/1m.csv
+      - name: Preserve raw data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fast-cafs-ips4o-results
+          path: experiment-results/*.csv
+          if-no-files-found: warn
