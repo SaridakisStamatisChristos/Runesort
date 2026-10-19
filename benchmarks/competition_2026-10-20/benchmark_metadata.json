@@ -1,0 +1,12 @@
+{
+  "cpu": "Intel Xeon Platinum 8573C virtual machine",
+  "toolchain": "GCC 14.2",
+  "boost": "1.83.0",
+  "cxx_flags": "-O3 -march=native -DNDEBUG -std=c++17",
+  "array_type": "uint64_t",
+  "sort_order": "ascending",
+  "copy_input_in_timed_region": false,
+  "generation_in_timed_region": false,
+  "verification_in_timed_region": false,
+  "note": "Warmup excluded. Algorithms interleaved. Per-seed medians. No CAFS, Highway or IPS4o runs."
+}
