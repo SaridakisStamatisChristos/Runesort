@@ -34,4 +34,6 @@ ctest --test-dir build --output-on-failure
 
 Input: unsigned 64-bit integers, ascending order; **not stable**. This API does not promise sorting of arbitrary records or signed floating-point values. Run local correctness tests before citing benchmark results; recorded timings are environment-dependent and do not establish universal superiority.
 
-**License:** No license grant has been added. All rights remain reserved until the owner selects a license.
+## License
+
+**Proprietary — All Rights Reserved.** Copyright © 2026 Stamatis-Christos Saridakis. Source visibility does not grant rights to use, copy, modify, or distribute the code. See [LICENSE](LICENSE) for the full terms. Third-party dependencies remain governed by their own licenses.
