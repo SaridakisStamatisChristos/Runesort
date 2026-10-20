@@ -1,0 +1,74 @@
+name: RUNE v12 Page Pretouch Hypothesis
+on:
+  push:
+    branches:
+      - research/rune-v12-page-pretouch-20261020
+    paths:
+      - 'runesort_v12/**'
+      - 'experiments/v12-page-pretouch-benchmark.cpp'
+      - 'experiments/v12_baselines/**'
+      - '.github/workflows/v12-page-pretouch.yml'
+      - 'CMakeLists.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hardware and compiler
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          g++ --version
+      - name: Full CMake differential suite
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v12-build -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v12-build --parallel 2
+          ctest --test-dir /tmp/rune-v12-build --output-on-failure
+      - name: Compile 3-way pinned source benchmark
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -pthread -I. experiments/v12-page-pretouch-benchmark.cpp -o /tmp/rune-v12-bench
+      - name: Compare 250K through 4M keys and verify exact outputs
+        run: |
+          set -euo pipefail
+          mkdir -p experiment-results
+          for n in 262144 524288 1000000 2000000 4000000; do
+            /tmp/rune-v12-bench "$n" | tee "experiment-results/$n.csv"
+          done
+      - name: Archive raw timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-v12-native-${{ matrix.runner }}
+          path: experiment-results/*.csv
+          if-no-files-found: warn
+  sanitizer:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: ASan/UBSan compacted-scratch regression tests
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined -Irunesort_v12 runesort_v12/test_compacted.cpp -o /tmp/v12-sanitized
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v12-sanitized
+      - name: Portable x86 no-BMI2
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -Irunesort_v12 runesort_v12/test_compacted.cpp -o /tmp/v12-nobmi2
+          /tmp/v12-nobmi2
