@@ -1,0 +1,52 @@
+{
+  "benchmarkRunId": 39440290337,
+  "sourceHead": "1f72d606e21f865af3d30e81b4a66e99ec459094",
+  "runUrl": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39440290337",
+  "date": "2026-10-20",
+  "compiler": "GCC 13.3",
+  "flags": "-std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "sizes": [
+    100000,
+    1000000,
+    4000000
+  ],
+  "warmups": 1,
+  "timedRepetitions": 3,
+  "seedsBase": [
+    631003,
+    631013,
+    631021
+  ],
+  "algorithmsArm64": 12,
+  "algorithmsX86": 13,
+  "observations": 7425,
+  "models": {
+    "x86": {
+      "entropy": "Intel Xeon Platinum 8573C",
+      "cardinality": "AMD EPYC 9V45",
+      "ordered": "AMD EPYC 9V74"
+    },
+    "arm64": {
+      "entropy": "Neoverse-N2",
+      "cardinality": "Neoverse-N2",
+      "ordered": "Neoverse-N2"
+    }
+  },
+  "jobs": {
+    "x86": {
+      "cardinality": 118688009987,
+      "ordered": 118688010174,
+      "entropy": 118688010521
+    },
+    "arm64": {
+      "entropy": 118688010110,
+      "ordered": 118688010169,
+      "cardinality": 118688010245
+    }
+  },
+  "upstreams": {
+    "highway": "c3407ccaaecffa735c911cae3971efa02263211d",
+    "ips4o": "8d5a97bb4c4048a1eef18b537f191a31462b051a",
+    "cafs": "13488afef446ae88e7ad631ec6f862def896094a"
+  }
+}

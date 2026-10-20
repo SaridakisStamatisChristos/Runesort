@@ -1,0 +1,21 @@
+name: RUNE v14 Gauntlet Evidence Integrity
+on:
+  push:
+    branches: [research/rune-v14-benchmark-gauntlet-20261020]
+    paths:
+      - 'experiments/v14-full-gauntlet/audit_evidence.py'
+      - 'experiments/v14-full-gauntlet/evidence/*.csv'
+      - '.github/workflows/v14-full-gauntlet-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Independent archive audit
+        run: |
+          set -euo pipefail
+          python3 experiments/v14-full-gauntlet/audit_evidence.py
