@@ -47,6 +47,24 @@ inline uint64_t deposit(uint64_t code,uint64_t mask){
   return out;
 #endif
 }
+// Predict whether 11-selected-bit packed-radix digits would require the
+// expensive portable bit-extraction loop rather than a contiguous shift.
+#if defined(__aarch64__)
+inline bool packed_digits_need_extract(uint64_t remaining) {
+  while(remaining) {
+    uint64_t mask=0;
+    unsigned bits=0;
+    while(bits<11 && remaining) {
+      mask |= remaining & (~remaining+1);
+      remaining &= remaining-1;
+      ++bits;
+    }
+    unsigned shift=ctz(mask);
+    if((mask>>shift)!=((uint64_t(1)<<bits)-1))return true;
+  }
+  return false;
+}
+#endif
 struct Digit{uint64_t mask; unsigned shift; unsigned bits; size_t start; bool contiguous;};
 inline uint64_t digit(uint64_t key, const Digit& d) {
   return d.contiguous ? ((key >> d.shift) & ((1ULL<<d.bits)-1)) : extract(key,d.mask);
@@ -548,7 +566,8 @@ inline void sort(uint64_t* a, size_t n) {
   // The full variability mask is certified by the scan above; stable LSD
   // byte radix skips only invariant bytes and sorts all uint64 keys exactly.
 #if defined(__aarch64__)
-  if(n>=262144 && varied>=17 && varied<=23){
+  if(n>=262144 && varied>=17 && varied<=23 &&
+     (varied==23 || detail::packed_digits_need_extract(variable))){
     detail::dense_radix(a,n,variable);
     return;
   }
