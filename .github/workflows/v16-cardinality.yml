@@ -1,0 +1,71 @@
+name: RUNE v16 Cardinality-Pilot Exact Competition
+on:
+  push:
+    branches: [research/rune-v16-cardinality-pilot-20261020]
+    paths:
+      - 'runesort_v16/rune_sort.hpp'
+      - 'experiments/v14_baselines/**'
+      - 'experiments/v16-cardinality-competition.cpp'
+      - '.github/workflows/v16-cardinality.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  external:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Machine and compiler evidence
+        run: |
+          set -euo pipefail
+          lscpu
+          g++ --version
+      - name: Fetch exact Highway and IPS4o revisions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune-v16-comp
+          cd /tmp/rune-v16-comp
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git -C ips4o rev-parse HEAD
+          git -C highway rev-parse HEAD
+      - name: Compile VQSort native libraries
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune-v16-comp/highway -B /tmp/rune-v16-comp/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune-v16-comp/build --target hwy_contrib --parallel 2
+      - name: Compile independent six-way benchmark
+        run: |
+          set -euo pipefail
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune-v16-comp/ips4o -I/tmp/rune-v16-comp/highway \
+            experiments/v16-cardinality-competition.cpp \
+            /tmp/rune-v16-comp/build/libhwy_contrib.a \
+            /tmp/rune-v16-comp/build/libhwy.a -latomic -o /tmp/rune-v16-external
+      - name: Run exact output and pairwise comparison
+        run: |
+          set -euo pipefail
+          mkdir -p v16-cardinality-raw
+          /tmp/rune-v16-external 1000000 | tee v16-cardinality-raw/1m.csv
+          /tmp/rune-v16-external 4000000 | tee v16-cardinality-raw/4m.csv
+      - name: Preserve raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v16-cardinality-${{ matrix.runner }}
+          path: v16-cardinality-raw/*.csv
+          if-no-files-found: warn
