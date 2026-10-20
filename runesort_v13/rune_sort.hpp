@@ -548,7 +548,7 @@ inline void sort(uint64_t* a, size_t n) {
   // The full variability mask is certified by the scan above; stable LSD
   // byte radix skips only invariant bytes and sorts all uint64 keys exactly.
 #if defined(__aarch64__)
-  if(n>=262144 && varied>=16 && varied<=23){
+  if(n>=262144 && varied>=17 && varied<=23){
     detail::dense_radix(a,n,variable);
     return;
   }
