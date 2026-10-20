@@ -1,0 +1,40 @@
+name: RUNE v10 radix width falsification
+on:
+  push:
+    branches:
+      - research/rune-v10-adaptive-10bit-radix-20261020
+    paths:
+      - 'runesort_v10/**'
+      - 'experiments/v10-fast-benchmark.cpp'
+      - '.github/workflows/v10-fast.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compiler and CPU
+        run: |
+          uname -m
+          lscpu
+          g++ --version
+      - name: Compile same-source comparison
+        run: g++ -O3 -march=native -DNDEBUG -std=c++17 -I. experiments/v10-fast-benchmark.cpp -o /tmp/rune-v10-fast
+      - name: Run 5 previously unseen seeds
+        run: |
+          mkdir -p experiment-results
+          /tmp/rune-v10-fast | tee experiment-results/fast.csv
+      - name: Archive raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-v10-${{ matrix.runner }}
+          path: experiment-results/fast.csv
+          if-no-files-found: warn
