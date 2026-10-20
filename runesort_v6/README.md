@@ -82,3 +82,7 @@ ctest --test-dir build --output-on-failure
 ```
 
 The original v5 header is preserved unchanged in `../runesort_v5/rune_sort.hpp`.
+
+## Independent exact-revision benchmark result
+
+The refined v6 source has now passed the [eight-way AMD EPYC 7763 comparison](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39346413026). At N=1M, K24576: v6 6.94 ms vs frozen v5 20.47 ms, CAFS 17.26 ms, VQSort 13.55 ms. At K32768: v6 7.96 ms vs v5 22.03 ms, CAFS 17.86 ms, VQSort 13.26 ms. VQSort wins high-entropy random values, and the smaller N=100K suite favors VQSort. Review the full [external evidence](evidence/EPYC7763_EXTERNAL.md) before interpreting these results; this does **not** establish overall SOTA.
