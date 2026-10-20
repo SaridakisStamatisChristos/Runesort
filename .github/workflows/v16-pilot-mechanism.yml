@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/v16-pilot-mechanism.yml'
       - 'experiments/v16-pilot-mechanism.cpp'
+      - 'runesort_v16/rune_sort.hpp'
   workflow_dispatch:
 permissions:
   contents: read
