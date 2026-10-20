@@ -4,6 +4,7 @@ on:
     branches:
       - research/rune-v13-arm-sparse-byte-radix-20261020
     paths:
+      - 'runesort_v13/**'
       - 'experiments/v13-external-competition.cpp'
       - '.github/workflows/v13-external.yml'
   workflow_dispatch:

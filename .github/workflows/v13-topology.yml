@@ -4,6 +4,7 @@ on:
     branches:
       - research/rune-v13-arm-sparse-byte-radix-20261020
     paths:
+      - 'runesort_v13/**'
       - 'experiments/v13-topology-benchmark.cpp'
       - '.github/workflows/v13-topology.yml'
   workflow_dispatch:
