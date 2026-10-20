@@ -286,13 +286,6 @@ inline bool fifth_distinct_reconstruct(uint64_t* a, size_t n) {
 // Exact fifth-tier reconstruction still checks every key and fails closed.
 inline bool fifth_tier_pilot(const uint64_t* a,size_t n) {
   constexpr size_t sample_n=16384, slots=32768;
-  // Research v16: at N>=2M, reduce the pilot repeat cutoff from 1600 to
-  // 1450. A K=81920 uniform palette has about 1534 repeats in 16K samples,
-  // so the old threshold often wrongly rejects a valid 81920-key tier.
-  // Keep the previous guard for smaller arrays, where setup costs dominate.
-  // This is only a performance pilot. Exact key-count/probe/counter checks
-  // in fifth_distinct_reconstruct still protect correctness on every input.
-  const size_t min_repeats=(n>=2000000)?1450:1600;
   if(n<sample_n)return false;
   std::vector<uint64_t> keys(slots);
   std::vector<uint8_t> used(slots);
@@ -305,7 +298,33 @@ inline bool fifth_tier_pilot(const uint64_t* a,size_t n) {
     while(used[b] && keys[b]!=x)b=(b+1)&(slots-1);
     if(!used[b]){used[b]=1;keys[b]=x;++unique;}
   }
-  return sample_n-unique>=min_repeats;
+  const size_t repeats=sample_n-unique;
+  // Preserve the original v14 pilot on all n<2M and obvious small-K
+  // datasets (>=1600 repeats). This branch affects performance only.
+  if(n<2000000 || repeats>=1600)return repeats>=1600;
+  if(repeats<1450)return false;
+  // v16b: near the 81920-key capacity, a 16K pilot alone cannot reliably
+  // distinguish 81920 keys (~1534 expected repeats) from 85000 (~1482).
+  // A 65K read-only sample magnifies the difference (~20425 vs ~19852).
+  // The second pilot is paid ONLY for borderline large-array cases.
+  constexpr size_t extended_n=65536, extended_slots=131072;
+  constexpr size_t extended_min_repeats=20140;
+  std::vector<uint64_t> keys2(extended_slots);
+  std::vector<uint8_t> used2(extended_slots);
+  size_t unique2=0;
+  for(size_t i=0;i<extended_n;++i){
+    const uint64_t x=a[(i*n)/extended_n];
+    uint64_t h=(x^(x>>32))*0x9e3779b97f4a7c15ULL;
+    h^=h>>33;
+    size_t b=size_t(h>>(64-17));
+    unsigned probes=0;
+    while(used2[b] && keys2[b]!=x){
+      if(++probes>=64)return false;
+      b=(b+1)&(extended_slots-1);
+    }
+    if(!used2[b]){used2[b]=1;keys2[b]=x;++unique2;}
+  }
+  return extended_n-unique2>=extended_min_repeats;
 }
 
 // Bounded insertion restoration: for data where misplaced keys need only
