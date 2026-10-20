@@ -1,0 +1,28 @@
+name: RUNE v14 x86-v13 Codegen Identity
+on:
+  push:
+    branches: [research/rune-v14-arm-spectrum-20261020]
+    paths:
+      - '.github/workflows/v14-x86-identity.yml'
+      - 'experiments/v14-x86-identity.py'
+      - 'runesort_v14/rune_sort.hpp'
+      - 'runesort_v13/rune_sort.hpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  identity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify x86 CPU, GCC and Clang
+        run: |
+          set -euo pipefail
+          lscpu
+          g++ --version
+          clang++ --version || true
+      - name: Compare full preprocessed C++ and compiled objects for native + no-BMI2
+        run: |
+          set -euo pipefail
+          python3 experiments/v14-x86-identity.py
