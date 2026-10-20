@@ -1,0 +1,52 @@
+{
+  "candidate_commit": "7c87921c30217d4317a964fed07debcc16b2f183",
+  "frozen_base_commit": "220313750c9a96e2250a29e9e41ed1b81bb9d47a",
+  "run_id": 39472827645,
+  "workflow_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39472827645",
+  "base_pr": 16,
+  "candidate_pr": 17,
+  "compiler": "g++ Ubuntu 13.3.0",
+  "flags": "-std=c++17 -O3 -march=native -DNDEBUG",
+  "jobs": [
+    {
+      "arch": "x86",
+      "job_id": 118801034981,
+      "cpu": "AMD EPYC 7763"
+    },
+    {
+      "arch": "arm64",
+      "job_id": 118801035701,
+      "cpu": "Neoverse-N2"
+    }
+  ],
+  "seeds": [
+    61001,
+    61007,
+    61009,
+    61027,
+    61031
+  ],
+  "measured_repetitions": 5,
+  "warmups": 1,
+  "input_lengths": [
+    1000000,
+    4000000
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "sparse20",
+    "K81920",
+    "K85000",
+    "sorted",
+    "nearly"
+  ],
+  "raw_rows": 280,
+  "exact_sort_verification": true,
+  "ci_qualification_jobs_passed": 4,
+  "main_ci_runs_passed": [
+    39472827347,
+    39472895838
+  ],
+  "note": "Runner is virtualized, not dedicated; per-mode speedups are conditional."
+}
