@@ -1,0 +1,79 @@
+name: RUNE v6 head-to-head sorting comparison
+on:
+  push:
+    branches:
+      - research/rune-v6-fourth-tier-20261020
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned upstream implementations
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/runesort-external
+          cd /tmp/runesort-external
+          git init cafs
+          git -C cafs remote add origin https://github.com/kexibq-official/cafs-lib.git
+          git -C cafs fetch --depth=1 origin 13488afef446ae88e7ad631ec6f862def896094a
+          git -C cafs checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          echo "CAFS=$(git -C cafs rev-parse HEAD)"
+          echo "IPS4o=$(git -C ips4o rev-parse HEAD)"
+          echo "Highway=$(git -C highway rev-parse HEAD)"
+      - name: Record machine and compiler
+        run: |
+          cat /proc/cpuinfo | grep -m1 'model name' || true
+          grep -m1 -E 'flags.*avx2.*bmi' /proc/cpuinfo || true
+          lscpu | head -25
+          g++ --version | head -1
+          cmake --version | head -1
+          if ! grep -qw avx2 /proc/cpuinfo; then echo 'AVX2 required by CAFS' >&2; exit 11; fi
+          if ! grep -qw bmi1 /proc/cpuinfo && ! grep -qw bmi /proc/cpuinfo; then echo 'BMI required by CAFS' >&2; exit 12; fi
+      - name: Install Boost header dependency
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libboost-dev
+      - name: Compile pinned Highway with VQSort
+        run: |
+          set -euxo pipefail
+          cmake -S /tmp/runesort-external/highway -B /tmp/runesort-external/highway-build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/runesort-external/highway-build --target hwy_contrib --parallel 2
+      - name: Compile direct benchmark
+        run: |
+          set -euxo pipefail
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/runesort-external/cafs/include \
+            -I/tmp/runesort-external/ips4o \
+            -I/tmp/runesort-external/highway \
+            experiments/v6-direct-competition.cpp \
+            /tmp/runesort-external/highway-build/libhwy_contrib.a \
+            /tmp/runesort-external/highway-build/libhwy.a \
+            -latomic -o /tmp/runesort-v6-bench
+      - name: Measure 100K and 1M, check all results
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p experiment-results
+          /tmp/runesort-v6-bench 100000 4 | tee experiment-results/100k.csv
+          /tmp/runesort-v6-bench 1000000 4 | tee experiment-results/1m.csv
+      - name: Publish raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runesort-v6-direct-comparison-results
+          path: experiment-results/*.csv
+          if-no-files-found: warn

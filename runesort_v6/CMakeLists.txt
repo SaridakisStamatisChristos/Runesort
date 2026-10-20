@@ -1,0 +1,11 @@
+add_library(runesort_v6 INTERFACE)
+target_include_directories(runesort_v6 INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/runesort_v5)
+target_compile_features(runesort_v6 INTERFACE cxx_std_17)
+if(BUILD_TESTING)
+  foreach(name compare adversarial v3_targeted v4_targeted v5_targeted v5_dispatch v6_targeted)
+    add_executable(test_v6_${name} test_${name}.cpp)
+    target_link_libraries(test_v6_${name} PRIVATE runesort_v6)
+    add_test(NAME v6_${name} COMMAND test_v6_${name})
+  endforeach()
+endif()

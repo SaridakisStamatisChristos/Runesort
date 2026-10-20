@@ -1,0 +1,139 @@
+{
+  "scope": "Fresh post-dispatch-refinement local benchmark; independent external comparison separate",
+  "hardware": "Intel Xeon Platinum 8573C virtual CPU",
+  "compiler": "GCC 14.2 -O3 -march=native -DNDEBUG -std=c++17",
+  "n": 1000000,
+  "protocol": "Four independent seeds; five measurements per case/seed; warmup excluded; same input v5 vs v6; medians of seed-level medians; CPU unpinned",
+  "results": [
+    {
+      "K": 0,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 28.2963,
+      "v6_ms": 28.0832,
+      "speedup": 1.008
+    },
+    {
+      "K": 1024,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 5.1631,
+      "v6_ms": 4.5338,
+      "speedup": 1.139
+    },
+    {
+      "K": 4096,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 5.0335,
+      "v6_ms": 5.3346,
+      "speedup": 0.944
+    },
+    {
+      "K": 8192,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 4.9191,
+      "v6_ms": 4.8073,
+      "speedup": 1.023
+    },
+    {
+      "K": 16384,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 7.2367,
+      "v6_ms": 7.0909,
+      "speedup": 1.021
+    },
+    {
+      "K": 20000,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 23.7447,
+      "v6_ms": 7.8187,
+      "speedup": 3.037
+    },
+    {
+      "K": 24576,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 24.0798,
+      "v6_ms": 8.0115,
+      "speedup": 3.006
+    },
+    {
+      "K": 32768,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 24.9578,
+      "v6_ms": 10.1089,
+      "speedup": 2.469
+    },
+    {
+      "K": 40960,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 25.5516,
+      "v6_ms": 24.8449,
+      "speedup": 1.028
+    },
+    {
+      "K": 49152,
+      "n": 1000000,
+      "seeds": [
+        271828,
+        314159,
+        777777,
+        8675309
+      ],
+      "v5_ms": 25.4875,
+      "v6_ms": 25.4982,
+      "speedup": 1
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "Local exploratory, no global SOTA claim",
+  "machine": "Intel Xeon Platinum 8573C virtual",
+  "compiler": "GCC 14.2 with -O3 -march=native -DNDEBUG -std=c++17",
+  "n": 1000000,
+  "seeds": [
+    271828,
+    314159,
+    777777,
+    8675309
+  ],
+  "repetitions_per_seed": 5,
+  "warmup": "one unmeasured round",
+  "measurements": {
+    "K24576": {
+      "v5_ms": 24.5311,
+      "v6_ms": 8.5506,
+      "speedup": 2.869
+    },
+    "K32768": {
+      "v5_ms": 25.4963,
+      "v6_ms": 10.7891,
+      "speedup": 2.363
+    },
+    "K40960": {
+      "v5_ms": 31.5024,
+      "v6_ms": 33.5928,
+      "speedup": 0.938
+    },
+    "uniform64": {
+      "v5_ms": 29.8041,
+      "v6_ms": 29.3685,
+      "speedup": 1.015
+    }
+  },
+  "caveats": "Med. of seed medians. CPU unpinned, runner interference possible. K40960 regression. Local results not evidence of CAFS/VQSort superiority."
+}
