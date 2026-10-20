@@ -1,0 +1,71 @@
+name: RUNE v14 Pinned External Sorter Qualification
+on:
+  push:
+    branches: [research/rune-v14-arm-spectrum-20261020]
+    paths:
+      - 'runesort_v14/rune_sort.hpp'
+      - 'experiments/v14_baselines/**'
+      - 'experiments/v14-external-competition.cpp'
+      - '.github/workflows/v14-external.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  external:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Machine and compiler evidence
+        run: |
+          set -euo pipefail
+          lscpu
+          g++ --version
+      - name: Fetch exact Highway and IPS4o revisions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune-v14-comp
+          cd /tmp/rune-v14-comp
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git -C ips4o rev-parse HEAD
+          git -C highway rev-parse HEAD
+      - name: Compile VQSort native libraries
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune-v14-comp/highway -B /tmp/rune-v14-comp/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune-v14-comp/build --target hwy_contrib --parallel 2
+      - name: Compile independent five-way benchmark
+        run: |
+          set -euo pipefail
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune-v14-comp/ips4o -I/tmp/rune-v14-comp/highway \
+            experiments/v14-external-competition.cpp \
+            /tmp/rune-v14-comp/build/libhwy_contrib.a \
+            /tmp/rune-v14-comp/build/libhwy.a -latomic -o /tmp/rune-v14-external
+      - name: Run exact output and pairwise comparison
+        run: |
+          set -euo pipefail
+          mkdir -p v14-external-raw
+          /tmp/rune-v14-external 1000000 | tee v14-external-raw/1m.csv
+          /tmp/rune-v14-external 4000000 | tee v14-external-raw/4m.csv
+      - name: Preserve raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v14-external-${{ matrix.runner }}
+          path: v14-external-raw/*.csv
+          if-no-files-found: warn
