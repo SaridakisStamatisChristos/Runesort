@@ -472,7 +472,8 @@ inline void sort(uint64_t* a, size_t n) {
          detail::fourth_distinct_reconstruct(a,n))return;
       // Fifth tier is attempted only when duplicate evidence, sufficient N,
       // and an independent 16K-sample repeat pilot jointly support it.
-      if(n>=524288 && rejection_duplicates>=100 &&
+      if(n>=524288 && detail::popcount(sampled_mask)>16 &&
+         rejection_duplicates>=100 &&
          detail::fifth_tier_pilot(a,n) &&
          detail::fifth_distinct_reconstruct(a,n))return;
     }

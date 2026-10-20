@@ -36,6 +36,16 @@ int main(){
     for(auto&x:keys)x=rng();if(k)for(auto&x:a)x=keys[rng()%k];else for(auto&x:a)x=rng();
     verify(a,true);for(size_t i=0;i<1000;++i)a[n-i-1]=rng();verify(a,true);
   }
+  // All 16 variable bits are noncontiguous: v7 must remain exact and
+  // must not preempt the established 16-bit compact-domain sorting path.
+  {
+    constexpr size_t n=1000000;
+    U mask=0;
+    for(int bit:{0,4,9,13,18,23,27,32,36,41,45,49,53,57,61,63})mask|=U(1)<<bit;
+    std::vector<U> a(n);
+    for(auto&x:a)x=rune::detail::deposit(rng()&65535,mask);
+    verify(std::move(a),false);
+  }
   std::vector<U> collision;
   for(U x=0;collision.size()<33&&x<30000000;++x){U h=(x^(x>>32))*0x9e3779b97f4a7c15ULL;h^=h>>33;if((h>>(64-18))==913)collision.push_back(x);}
   if(collision.size()!=33){std::cerr<<"Failed to construct collision witness\n";return 9;}
