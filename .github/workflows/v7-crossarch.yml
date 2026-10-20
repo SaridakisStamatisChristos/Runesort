@@ -24,9 +24,9 @@ jobs:
         run: |
           set -euxo pipefail
           uname -m
-          lscpu | head -35
-          g++ --version | head -2
-          cat /proc/cpuinfo | head -25
+          lscpu
+          g++ --version
+          head -n 25 /proc/cpuinfo
       - name: Install Boost headers
         run: sudo apt-get update -qq && sudo apt-get install -y -qq libboost-dev
       - name: Fetch pinned comparator revisions
