@@ -1,0 +1,6 @@
+add_library(runesort_v19 INTERFACE)
+target_include_directories(runesort_v19 INTERFACE . ..)
+target_compile_features(runesort_v19 INTERFACE cxx_std_17)
+add_executable(test_v19_compact_histogram test_compact_histogram.cpp)
+target_link_libraries(test_v19_compact_histogram PRIVATE runesort_v19)
+add_test(NAME v19_compact_histogram COMMAND test_v19_compact_histogram)
