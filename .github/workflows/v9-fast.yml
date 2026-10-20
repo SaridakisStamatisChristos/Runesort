@@ -1,0 +1,42 @@
+name: RUNE v9 fast falsification
+on:
+  push:
+    branches:
+      - research/rune-v9-exact-131k-tier-20261020
+    paths:
+      - 'runesort_v9/**'
+      - 'experiments/v9-fast-benchmark.cpp'
+      - '.github/workflows/v9-fast.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Environment
+        run: |
+          uname -m
+          lscpu
+          g++ --version
+      - name: Build benchmark
+        run: |
+          g++ -O3 -march=native -DNDEBUG -std=c++17 -I. \
+            experiments/v9-fast-benchmark.cpp -o /tmp/v9-fast
+      - name: Compare on fresh seeds, checking all results
+        run: |
+          mkdir -p experiment-results
+          /tmp/v9-fast | tee experiment-results/v9-fast.csv
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v9-fast-${{ matrix.runner }}
+          path: experiment-results/v9-fast.csv
+          if-no-files-found: warn
