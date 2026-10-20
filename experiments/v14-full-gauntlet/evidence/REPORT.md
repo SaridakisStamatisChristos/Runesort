@@ -102,7 +102,7 @@ Every CPU has **99 mode×size cases** (33×3), and all cases have all available 
 - [All 198 mode×size fastest-measured sorters](winners.csv).
 
 For orientation only, counting whichever algorithm has the smallest observed *median seed-of-medians* even when a margin is tiny yields:
-- **x86 (99 cases over three DIFFERENT CPU models):** VQSort 48, CAFS 16, five frozen/current RUNE versions combined 29, IPS4o 3, `std::stable_sort` 2, pdqsort 1.
+- **x86 (99 cases over three DIFFERENT CPU models):** VQSort 48, CAFS 16, six RUNE variants combined 29, IPS4o 3, `std::stable_sort` 2, pdqsort 1.
 - **ARM64 (99 cases over Neoverse-N2 virtual runners):** six RUNE variants combined 75, VQSort 10, IPS4o 9, `std::stable_sort` 3, spreadsort 1, pdqsort 1.
 
 **CAUTION:** These are descriptive ranks for an intentionally varied benchmark suite, *not weighted market share*, confidence estimates, independent replications or fair globally comparable counts across different hardware. Near-equal RUNE variants in particular swap ranks due to ordinary noise. The `winners.csv` file marks all algorithms within a **2% descriptive margin** of the fastest (this is NOT a statistical confidence interval).
