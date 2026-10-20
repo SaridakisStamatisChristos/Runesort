@@ -411,11 +411,12 @@ inline void sort(uint64_t* a, size_t n) {
     // An observed duplicate count is a heuristic for domain cardinality.
     // This dispatch affects only performance; the radix fallback is exact.
     if(n>=262144){
-      if(rejection_duplicates>=400){
-        if(detail::large_distinct_reconstruct(a,n))return;
-      }else if(rejection_duplicates>=250){
-        if(detail::fourth_distinct_reconstruct(a,n))return;
-      }
+      if(rejection_duplicates>=400 &&
+         detail::large_distinct_reconstruct(a,n))return;
+      // A high duplicate count can still mean 16K--32K keys.
+      // Failed 16K reconstruction leaves input intact; try exact 32K tier.
+      if(rejection_duplicates>=250 &&
+         detail::fourth_distinct_reconstruct(a,n))return;
     }
   }
   if(sample_unique_count<=48 && detail::distinct_reconstruct(a,n))return;
