@@ -1,0 +1,37 @@
+name: RUNE v16 Exact Pilot Mechanism
+on:
+  push:
+    branches: [research/rune-v16-cardinality-pilot-20261020]
+    paths:
+      - '.github/workflows/v16-pilot-mechanism.yml'
+      - 'experiments/v16-pilot-mechanism.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measured:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - run: |
+          lscpu
+          g++ --version
+      - name: Compile frozen v14 vs v16 exact K domain sampler
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. experiments/v16-pilot-mechanism.cpp -o /tmp/v16-pilot
+      - name: Run same-seed randomized pair benchmark and actual pilot telemetry
+        run: |
+          set -euo pipefail
+          /tmp/v16-pilot 4000000 | tee /tmp/v16-pilot-raw.csv
+      - name: Save raw observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v16-pilot-${{ matrix.runner }}
+          path: /tmp/v16-pilot-raw.csv
