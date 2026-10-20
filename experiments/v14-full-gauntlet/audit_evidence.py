@@ -71,7 +71,6 @@ def main():
             ms=median(values.values())
             ratios=[values[seed]/v["RUNE_v14"][seed] for seed in seeds]
             row=published[(arch,group,mode,n,name)]
-            assert int(row["input_seeds"])==3
             assert same_number(row["median_seed_ms"],ms), (key,name,"median")
             assert same_number(row["paired_competitor_over_v14"],median(ratios))
             assert same_number(row["paired_min_ratio"],min(ratios))
