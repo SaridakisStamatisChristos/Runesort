@@ -230,10 +230,10 @@ inline bool fourth_distinct_reconstruct(uint64_t* a, size_t n) {
   return true;
 }
 
-// v7 experimental fifth tier: exact, fail-closed reconstruction of up to 65,536
+// v7 experimental fifth tier: exact, fail-closed reconstruction of up to 81,920
 // full-width keys. A failed scan cannot modify the original array.
 inline bool fifth_distinct_reconstruct(uint64_t* a, size_t n) {
-  constexpr size_t slots=262144, max_keys=65536, max_probe=32;
+  constexpr size_t slots=262144, max_keys=81920, max_probe=32;
   std::vector<uint64_t> keys(slots);
   std::vector<uint32_t> counts(slots);
   std::vector<uint8_t> used(slots);
@@ -267,7 +267,7 @@ inline bool fifth_distinct_reconstruct(uint64_t* a, size_t n) {
 // Performance-only uniqueness pilot; no correctness assumptions.
 // Exact fifth-tier reconstruction still checks every key and fails closed.
 inline bool fifth_tier_pilot(const uint64_t* a,size_t n) {
-  constexpr size_t sample_n=16384, slots=32768, min_repeats=1820;
+  constexpr size_t sample_n=16384, slots=32768, min_repeats=1600;
   if(n<sample_n)return false;
   std::vector<uint64_t> keys(slots);
   std::vector<uint8_t> used(slots);

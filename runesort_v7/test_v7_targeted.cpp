@@ -21,7 +21,7 @@ static void verify(std::vector<U> a,bool direct=true){
 int main(){
   std::mt19937_64 rng(0x52756e65000FULL);
   for(size_t n:{size_t(0),size_t(1),size_t(2),size_t(63),size_t(64),size_t(65),size_t(4096),size_t(65536),size_t(262143),size_t(262144),size_t(524287),size_t(524288),size_t(525000)}){
-    for(size_t k:{size_t(1),size_t(2),size_t(16),size_t(4096),size_t(16384),size_t(32767),size_t(32768),size_t(32769),size_t(40960),size_t(65535),size_t(65536),size_t(65537),size_t(73728),size_t(98304)}){
+    for(size_t k:{size_t(1),size_t(2),size_t(16),size_t(4096),size_t(16384),size_t(32767),size_t(32768),size_t(32769),size_t(40960),size_t(65535),size_t(65536),size_t(65537),size_t(73728),size_t(81920),size_t(81921),size_t(98304)}){
       std::vector<U> keys(k),a(n);for(auto&x:keys)x=rng();for(auto&x:a)x=keys[rng()%k];
       verify(a,n>=4096);
       if(n>=65536){for(size_t i=0;i<std::min(k,n);++i)a[i]=keys[i];verify(a,false);}
@@ -31,7 +31,7 @@ int main(){
     std::sort(a.begin(),a.end());verify(a);
     if(n) {std::rotate(a.begin(),a.begin()+n/3,a.end());verify(a);}
   }
-  for(size_t k:{size_t(40960),size_t(65536),size_t(73728),size_t(98304),size_t(0)}){
+  for(size_t k:{size_t(40960),size_t(65536),size_t(73728),size_t(81920),size_t(81921),size_t(98304),size_t(0)}){
     size_t n=1000000;std::vector<U>a(n),keys(k);
     for(auto&x:keys)x=rng();if(k)for(auto&x:a)x=keys[rng()%k];else for(auto&x:a)x=rng();
     verify(a,true);for(size_t i=0;i<1000;++i)a[n-i-1]=rng();verify(a,true);

@@ -84,7 +84,7 @@ int main(int argc,char**argv) {
   const int repetitions=argc>2?std::stoi(argv[2]):4;
   if (repetitions<2 || n<2) return 2;
   const std::array<U,3> seeds={271828ULL,314159ULL,777777ULL};
-  const std::array<std::string,15> modes={
+  const std::array<std::string,16> modes={
     "uniform64","random32","sparse16","K128","K1024","K4096",
     "K8192","K16384","K32768","K40960","K49152","K65536","K73728","local","nearly","rotated"
   };
