@@ -1,0 +1,43 @@
+{
+  "source_commit": "d0b0e8d2e0c6b46d95cf117e2ed4323a2030b36a",
+  "study_run": 39483684019,
+  "CI_push_run": 39483682421,
+  "CI_PR_run": 39483739151,
+  "source_proprietary": true,
+  "conditions": "GitHub Actions virtualized",
+  "compiler": "Ubuntu GCC 13.3",
+  "flags": "-std=c++17 -O3 -march=native -DNDEBUG",
+  "raw_rows": 300,
+  "correct_raw_rows": 300,
+  "verified_architectures": [
+    {
+      "arch": "x86_64",
+      "cpu": "AMD EPYC 7763"
+    },
+    {
+      "arch": "aarch64",
+      "cpu": "ARM Neoverse-N2"
+    }
+  ],
+  "seeds": [
+    71001,
+    71007,
+    71009,
+    71023,
+    71029
+  ],
+  "reps": 3,
+  "warmups": 1,
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "lengths": [
+    1000000,
+    4000000
+  ],
+  "conclusion": "NO_GO general replacement; retain archival evidence"
+}

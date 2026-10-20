@@ -1,0 +1,6 @@
+add_library(runesort_v18 INTERFACE)
+target_include_directories(runesort_v18 INTERFACE . ..)
+target_compile_features(runesort_v18 INTERFACE cxx_std_17)
+add_executable(test_v18_buffered test_buffered.cpp)
+target_link_libraries(test_v18_buffered PRIVATE runesort_v18)
+add_test(NAME v18_buffered COMMAND test_v18_buffered)
