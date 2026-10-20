@@ -1,0 +1,38 @@
+name: RUNE v15 Radix11 Sanitizer and Portability
+on:
+  push:
+    branches: [research/rune-v15-11bit-radix-x86-20261020]
+    paths:
+      - '.github/workflows/v15-sanitize.yml'
+      - 'runesort_v15/rune_sort.hpp'
+      - 'runesort_v15/test_radix11.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  asan_ubsan:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Compiler hardware provenance
+        run: |
+          set -euo pipefail
+          uname -m
+          g++ --version
+      - name: Direct six-pass radix plus full dispatcher under ASan UBSan
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined \
+            -Irunesort_v15 runesort_v15/test_radix11.cpp -o /tmp/v15-sanitized
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v15-sanitized
+      - name: x86 no-BMI2 portability
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -Irunesort_v15 runesort_v15/test_radix11.cpp -o /tmp/v15-portable
+          /tmp/v15-portable

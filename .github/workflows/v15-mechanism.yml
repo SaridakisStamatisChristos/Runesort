@@ -1,0 +1,35 @@
+name: RUNE v15 Native Radix Mechanism Attribution
+on:
+  push:
+    branches: [research/rune-v15-11bit-radix-x86-20261020]
+    paths:
+      - '.github/workflows/v15-mechanism.yml'
+      - 'experiments/v15-mechanism.cpp'
+      - 'runesort_v15/rune_sort.hpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native_x86:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - run: |
+          lscpu
+          g++ --version
+      - name: Build direct 8-bit and 11-bit sorter comparison
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. experiments/v15-mechanism.cpp -o /tmp/v15-attribution
+      - name: Run paired native counters independent of Highway
+        run: |
+          set -euo pipefail
+          mkdir -p v15-attribution
+          for n in 1000000 4000000; do /tmp/v15-attribution "$n" | tee "v15-attribution/$n.csv"; done
+      - name: Keep unmodified raw trials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v15-radix-mechanism-raw
+          path: v15-attribution/*.csv
