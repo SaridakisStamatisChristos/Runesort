@@ -600,7 +600,9 @@ inline void sort(uint64_t* a, size_t n) {
   // subsequently overwritten before the next pass reads it.
   std::unique_ptr<uint64_t[]> scratch(new uint64_t[n]);
   constexpr size_t kNominalPageStride = 4096 / sizeof(uint64_t);
-  for(size_t i=0;i<n;i+=kNominalPageStride) scratch[i]=0;
+  // Volatile forces this experiment's page-touch stores to be observable.
+  volatile uint64_t* page_touch = scratch.get();
+  for(size_t i=0;i<n;i+=kNominalPageStride) page_touch[i]=0;
   uint64_t* src=a;
   uint64_t* dst=scratch.get();
   for(const auto& d:digits){
