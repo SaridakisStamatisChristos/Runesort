@@ -1,0 +1,89 @@
+name: RUNE v14 comprehensive 12-13 algorithm benchmark
+on:
+  push:
+    branches: [research/rune-v14-benchmark-gauntlet-20261020]
+    paths:
+      - '.github/workflows/v14-full-gauntlet.yml'
+      - 'experiments/v14-full-gauntlet.cpp'
+      - 'experiments/v14-gauntlet-verify.py'
+      - 'runesort_v14/rune_sort.hpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  competition:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        group: [entropy, cardinality, ordered]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Hardware and compiler provenance
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          g++ --version
+          git rev-parse HEAD
+      - name: Install Boost headers
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libboost-dev
+      - name: Fetch immutable comparator source revisions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune-gauntlet
+          cd /tmp/rune-gauntlet
+          git init cafs
+          git -C cafs remote add origin https://github.com/kexibq-official/cafs-lib.git
+          git -C cafs fetch --depth=1 origin 13488afef446ae88e7ad631ec6f862def896094a
+          git -C cafs checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          for x in cafs ips4o highway; do echo "$x: $(git -C $x rev-parse HEAD)"; done
+      - name: Compile native Highway VQSort libraries
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune-gauntlet/highway -B /tmp/rune-gauntlet/hwy-build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune-gauntlet/hwy-build --target hwy_contrib --parallel 2
+      - name: Compile complete sorting competition
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune-gauntlet/cafs/include \
+            -I/tmp/rune-gauntlet/ips4o -I/tmp/rune-gauntlet/highway \
+            experiments/v14-full-gauntlet.cpp \
+            /tmp/rune-gauntlet/hwy-build/libhwy_contrib.a \
+            /tmp/rune-gauntlet/hwy-build/libhwy.a -latomic \
+            -o /tmp/rune-gauntlet/competition
+      - name: Exact-output broad-size benchmark
+        run: |
+          set -euo pipefail
+          mkdir -p gauntlet-data
+          for n in 100000 1000000 4000000; do
+            echo "BENCHMARK group=${{ matrix.group }} n=$n"
+            /tmp/rune-gauntlet/competition "${{ matrix.group }}" "$n" 3 3 \
+              | tee "gauntlet-data/${{ matrix.group }}_$n.csv"
+            python3 experiments/v14-gauntlet-verify.py \
+              "gauntlet-data/${{ matrix.group }}_$n.csv" "${{ matrix.group }}" "$n"
+          done
+      - name: Archive independent raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v14-gauntlet-${{ matrix.runner }}-${{ matrix.group }}
+          path: gauntlet-data/*.csv
+          if-no-files-found: warn
