@@ -6,7 +6,7 @@ on:
       - 'runesort_v15/rune_sort.hpp'
       - 'experiments/v14_baselines/**'
       - 'experiments/v15-external-competition.cpp'
-      - '.github/workflows/v14-external.yml'
+      - '.github/workflows/v15-external.yml'
   workflow_dispatch:
 permissions:
   contents: read
