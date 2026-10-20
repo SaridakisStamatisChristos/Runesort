@@ -1,0 +1,41 @@
+name: RUNE v10 Radix Sanitizers
+on:
+  push:
+    branches:
+      - research/rune-v10-uninitialized-radix-scratch-20261020
+    paths:
+      - '.github/workflows/v10-sanitizer.yml'
+      - 'runesort_v10/rune_sort.hpp'
+      - 'runesort_v10/test_radix_scratch.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sanitize:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with ASan and UBSan
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined -Irunesort_v10 \
+            runesort_v10/test_radix_scratch.cpp -o /tmp/v10-radix-sanitized
+      - name: Execute direct radix sanitizer tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v10-radix-sanitized
+      - name: Compile portable no-BMI2 build on x86
+        if: matrix.runner == 'ubuntu-24.04'
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -Irunesort_v10 \
+            runesort_v10/test_radix_scratch.cpp -o /tmp/v10-radix-portable
+          /tmp/v10-radix-portable

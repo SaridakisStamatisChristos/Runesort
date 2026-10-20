@@ -1,0 +1,55 @@
+name: RUNE v10 Native Radix Scratch Comparison
+on:
+  push:
+    branches:
+      - research/rune-v10-uninitialized-radix-scratch-20261020
+    paths:
+      - 'runesort_v10/**'
+      - 'experiments/v10-scratch-benchmark.cpp'
+      - '.github/workflows/v10-scratch.yml'
+      - 'CMakeLists.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hardware and toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          uname -m
+          lscpu
+          g++ --version
+      - name: Compile and run CMake tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v10 -DCMAKE_BUILD_TYPE=Release -DRUNE_WITH_BOOST_BENCHMARK=OFF
+          cmake --build /tmp/rune-v10 --parallel 2
+          ctest --test-dir /tmp/rune-v10 --output-on-failure
+      - name: Compile exact-output same-input comparison
+        shell: bash
+        run: |
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -pthread -I. experiments/v10-scratch-benchmark.cpp -o /tmp/rune-v10-bench
+      - name: Compare at 1 million and 4 million keys
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p experiment-results
+          /tmp/rune-v10-bench 1000000 | tee experiment-results/1m.csv
+          /tmp/rune-v10-bench 4000000 | tee experiment-results/4m.csv
+      - name: Archive all raw timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runesort-v10-scratch-${{ matrix.runner }}
+          path: experiment-results/*.csv
+          if-no-files-found: warn
