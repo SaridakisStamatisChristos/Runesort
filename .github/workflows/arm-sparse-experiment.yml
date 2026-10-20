@@ -1,0 +1,40 @@
+name: ARM sparse16 exact-domain experiment
+on:
+  push:
+    branches: [research/rune-arm-sparse16-20261020]
+    paths: ['experiments/arm-sparse-benchmark.cpp', '.github/workflows/arm-sparse-experiment.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04-arm, ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record hardware
+        run: |
+          uname -m
+          lscpu
+          g++ --version
+      - name: Install Boost
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libboost-dev
+      - name: Build
+        run: g++ -O3 -march=native -DNDEBUG -std=c++17 -I. experiments/arm-sparse-benchmark.cpp -o /tmp/rune-arm-bench
+      - name: Verify and measure
+        run: |
+          set -euo pipefail
+          mkdir -p experiment-results
+          /tmp/rune-arm-bench 100000 4 | tee experiment-results/n100k.csv
+          /tmp/rune-arm-bench 1000000 4 | tee experiment-results/n1m.csv
+      - name: Save raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-arm-sparse-${{ matrix.runner }}
+          path: experiment-results/*.csv
+          if-no-files-found: warn
