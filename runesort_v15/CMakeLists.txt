@@ -1,0 +1,8 @@
+add_library(runesort_v15 INTERFACE)
+target_include_directories(runesort_v15 INTERFACE .)
+target_compile_features(runesort_v15 INTERFACE cxx_std_17)
+foreach(name compare adversarial v7_targeted radix11)
+  add_executable(test_v15_${name} test_${name}.cpp)
+  target_link_libraries(test_v15_${name} PRIVATE runesort_v15)
+  add_test(NAME v15_${name} COMMAND test_v15_${name})
+endforeach()
