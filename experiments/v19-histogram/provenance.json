@@ -1,0 +1,34 @@
+{
+  "algorithm_commit": "1bd17bb5d6669040bb476fb424ba18c6e19e3f28",
+  "archival_parent": "927d29b778b75f67e8a908cffa914a5f6e88929f",
+  "research_run": 39488183226,
+  "push_run": 39488182919,
+  "PR_run": 39488235807,
+  "environment": "GitHub-hosted Ubuntu 24.04 virtual x86_64 / arm64",
+  "compiler_flags": "g++ -std=c++17 -O3 -march=native -DNDEBUG",
+  "seeds": [
+    82103,
+    82111,
+    82117,
+    82129,
+    82133
+  ],
+  "n": [
+    1000000,
+    4000000
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "warmup_rounds": 1,
+  "measure_rounds": 3,
+  "measured_raw_rows": 300,
+  "correct_raw_rows": 300,
+  "summary_groups": 20,
+  "decision": "NO-GO integration; reject perpass32, fused32 unproven small gains",
+  "independent_external_comparator_run": false
+}
