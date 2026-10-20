@@ -24,7 +24,7 @@ int main(){
   std::mt19937_64 r(0x9fa702024ULL);
   for(size_t n:{size_t(65),size_t(65536),size_t(262143),
                 size_t(262144),size_t(300000),size_t(1000000)}){
-    for(size_t k:{size_t(4096),size_t(16384),size_t(24576),
+    for(size_t k:{size_t(4096),size_t(16384),size_t(20000),size_t(24576),
                   size_t(32767),size_t(32768),size_t(32769),
                   size_t(49152),size_t(65536)}){
       std::vector<U> keys(k);

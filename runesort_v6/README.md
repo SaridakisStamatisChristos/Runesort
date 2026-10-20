@@ -11,13 +11,43 @@ A fourth bounded table can be substantially faster than generic radix.
 - Existing 1K and 4K tiers still run first. The 4K tier reports the number of
   duplicate observations before it rejects the 4097th distinct value.
 - For `n >= 262144`, counts >=400 attempt v5's 16K tier unchanged.
-- Counts in [250,399] attempt the new 32K tier; counts below 250 use the existing
+- If the 16K tier rejects, counts >=250 also attempt the new 32K tier; counts below 250 use the existing
   safe general sorter. These numbers are *heuristics*, not correctness criteria.
 - The 32K tier has 131072 slots, a limit of 32768 distinct keys, 32 probes,
   exact equality resolution, and overflow rejection. It does not modify input
   on failure. Successful reconstruction sorts the distinct key-frequency pairs
   before writing the sorted multiset.
 - Same API: `rune::sort(uint64_t*,size_t)`; unstable value-only sorting.
+
+## Refined dispatch results (same-source-revision, primary local evidence)
+
+A second local run of the revised v6 routing on the same Intel Xeon Platinum
+8573C virtual CPU used 4 seeds and 5 measured repetitions per seed. Medians:
+
+| Distinct keys | v5 ms | revised v6 ms | v5/v6 |
+|---|---:|---:|---:|
+| 20000 | 23.745 | 7.819 | 3.04x |
+| 24576 | 24.080 | 8.011 | 3.01x |
+| 32768 | 24.958 | 10.109 | 2.47x |
+| 40960 | 25.552 | 24.845 | ~1.03x |
+| 49152 | 25.488 | 25.498 | parity |
+
+Raw seed data and computed medians are in [evidence](evidence).
+The earlier figures below describe the *first* v6 dispatch candidate.
+They must not be presented as measurements from the revised implementation.
+
+## Independent comparator check (initial, pre-refinement)
+
+A direct seven-competitor [GitHub Actions run](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39345849698)
+on AMD EPYC 9V45 passed exact-output tests. At K32768, the initial v6 was
+5.22ms versus 8.83ms for v5, 4.16ms CAFS and 3.49ms VQSort. Thus the
+new tier was faster than v5 but *slower than both specialized competitors*
+on that runner. At K24576 it was near parity with v5 (8.06ms versus 8.10ms),
+revealing the route now fixed. This is a different CPU from the local
+Xeon results and must not be pooled with them.
+
+The refined dispatch has its own external benchmark workflow; compare those
+measurements separately. **No global SOTA or novelty claim is supported.**
 
 ## Evidence, limitations, and rejected alternatives
 Locally executed on Intel Xeon Platinum 8573C virtual CPU,
