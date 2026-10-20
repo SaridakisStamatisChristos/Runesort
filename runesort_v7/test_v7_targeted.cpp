@@ -7,7 +7,7 @@
 #include <cstdlib>
 using U=uint64_t;
 static unsigned long long checks=0;
-static void verify(std::vector<U> a,bool direct){
+static void verify(std::vector<U> a,bool direct=true){
   auto original=a,expected=a;std::sort(expected.begin(),expected.end());
   if(direct){bool ok=rune::detail::fifth_distinct_reconstruct(a.data(),a.size());
     if(ok&&a!=expected){std::cerr<<"Bad accepted fifth reconstruction\n";std::exit(5);}
