@@ -1,0 +1,8 @@
+add_library(runesort_v13 INTERFACE)
+target_include_directories(runesort_v13 INTERFACE .)
+target_compile_features(runesort_v13 INTERFACE cxx_std_17)
+foreach(name compare adversarial v7_targeted sparse_arm)
+  add_executable(test_v13_${name} test_${name}.cpp)
+  target_link_libraries(test_v13_${name} PRIVATE runesort_v13)
+  add_test(NAME v13_${name} COMMAND test_v13_${name})
+endforeach()

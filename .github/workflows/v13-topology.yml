@@ -1,0 +1,41 @@
+name: RUNE v13 Bit-Mask Topology Adversarial Qualification
+on:
+  push:
+    branches:
+      - research/rune-v13-arm-sparse-byte-radix-20261020
+    paths:
+      - 'runesort_v13/**'
+      - 'experiments/v13-topology-benchmark.cpp'
+      - '.github/workflows/v13-topology.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  topology:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record hardware and compile target
+        run: |
+          set -euo pipefail
+          lscpu
+          g++ --version
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -pthread -I. experiments/v13-topology-benchmark.cpp -o /tmp/v13-topology
+      - name: Compare bit-topology classes against frozen v7
+        run: |
+          set -euo pipefail
+          mkdir -p v13-topology-raw
+          /tmp/v13-topology 1000000 | tee v13-topology-raw/1m.csv
+          /tmp/v13-topology 4000000 | tee v13-topology-raw/4m.csv
+      - name: Save exact-output trials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v13-topology-${{ matrix.runner }}
+          path: v13-topology-raw/*.csv
+          if-no-files-found: warn

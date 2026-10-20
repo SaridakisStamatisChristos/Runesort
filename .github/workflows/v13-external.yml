@@ -1,0 +1,71 @@
+name: RUNE v13 Pinned External Comparators
+on:
+  push:
+    branches:
+      - research/rune-v13-arm-sparse-byte-radix-20261020
+    paths:
+      - 'runesort_v13/**'
+      - 'experiments/v13-external-competition.cpp'
+      - '.github/workflows/v13-external.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  external:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hardware and compiler
+        run: |
+          set -euo pipefail
+          lscpu
+          g++ --version
+      - name: Fetch exact upstream source revisions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v13-competitors
+          cd /tmp/v13-competitors
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git -C ips4o rev-parse HEAD
+          git -C highway rev-parse HEAD
+      - name: Build native Highway vector sorter
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/v13-competitors/highway -B /tmp/v13-competitors/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/v13-competitors/build --target hwy_contrib --parallel 2
+      - name: Compile identical four-way benchmark
+        run: |
+          set -euo pipefail
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/v13-competitors/ips4o -I/tmp/v13-competitors/highway \
+            experiments/v13-external-competition.cpp \
+            /tmp/v13-competitors/build/libhwy_contrib.a \
+            /tmp/v13-competitors/build/libhwy.a -latomic -o /tmp/v13-external-bench
+      - name: Oracle-verified 1M and 4M direct comparison
+        run: |
+          set -euo pipefail
+          mkdir -p v13-external-raw
+          /tmp/v13-external-bench 1000000 | tee v13-external-raw/1m.csv
+          /tmp/v13-external-bench 4000000 | tee v13-external-raw/4m.csv
+      - name: Archive complete timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v13-external-${{ matrix.runner }}
+          path: v13-external-raw/*.csv
+          if-no-files-found: warn

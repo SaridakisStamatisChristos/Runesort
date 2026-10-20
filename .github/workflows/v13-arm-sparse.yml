@@ -1,0 +1,73 @@
+name: RUNE v13 ARM Sparse Byte Radix
+on:
+  push:
+    branches:
+      - research/rune-v13-arm-sparse-byte-radix-20261020
+    paths:
+      - 'runesort_v13/**'
+      - 'experiments/v13-arm-sparse-benchmark.cpp'
+      - '.github/workflows/v13-arm-sparse.yml'
+      - 'CMakeLists.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: CPU and compiler provenance
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          g++ --version
+      - name: Full repository CMake tests
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v13-cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v13-cmake --parallel 2
+          ctest --test-dir /tmp/rune-v13-cmake --output-on-failure
+      - name: Compile native v13 versus frozen v7
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -pthread -I. experiments/v13-arm-sparse-benchmark.cpp -o /tmp/rune-v13-bench
+      - name: Exact-oracle multi-size qualification
+        run: |
+          set -euo pipefail
+          mkdir -p v13-raw
+          for n in 100000 1000000 4000000; do
+            /tmp/rune-v13-bench "$n" | tee "v13-raw/$n.csv"
+          done
+      - name: Save raw observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-v13-${{ matrix.runner }}
+          path: v13-raw/*.csv
+          if-no-files-found: warn
+  sanitizers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sparse mask ASan and UBSan
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined -Irunesort_v13 runesort_v13/test_sparse_arm.cpp -o /tmp/v13-sanitized
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v13-sanitized
+      - name: Portable no-BMI2 x86 semantics
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -Irunesort_v13 runesort_v13/test_sparse_arm.cpp -o /tmp/v13-portable
+          /tmp/v13-portable
