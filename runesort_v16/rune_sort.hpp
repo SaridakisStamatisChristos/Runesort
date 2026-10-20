@@ -517,7 +517,11 @@ inline void sort(uint64_t* a, size_t n) {
       // Fifth tier is attempted only when duplicate evidence, sufficient N,
       // and an independent 16K-sample repeat pilot jointly support it.
       if(n>=524288 && detail::popcount(sampled_mask)>16 &&
-         rejection_duplicates>=100 &&
+         // v16c: the old 100-duplicate short scout wrongly rejects K81920
+         // for two of five pinned seeds (89 and 97 duplicates). At N>=2M
+         // allow 80, but still require the independent two-stage pilot and
+         // the unchanged exact fail-closed 81920-key reconstruction.
+         rejection_duplicates>=(n>=2000000 ? 80u : 100u) &&
          detail::fifth_tier_pilot(a,n) &&
          detail::fifth_distinct_reconstruct(a,n))return;
     }
