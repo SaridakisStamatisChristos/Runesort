@@ -1,0 +1,7 @@
+add_library(runesort_v17 INTERFACE)
+target_include_directories(runesort_v17 INTERFACE .)
+target_compile_features(runesort_v17 INTERFACE cxx_std_17)
+add_executable(test_v17_scratch test_radix_scratch.cpp)
+target_link_libraries(test_v17_scratch PRIVATE runesort_v17)
+target_include_directories(test_v17_scratch PRIVATE ..)
+add_test(NAME v17_scratch COMMAND test_v17_scratch)

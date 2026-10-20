@@ -1,0 +1,66 @@
+name: RUNE v17 Fixed8 Scratch Qualification
+on:
+  push:
+    branches: [research/rune-v17-fixed8-scratch-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Hardware and toolchain
+        run: |
+          uname -a
+          lscpu
+          g++ --version
+      - name: Compile and verify CMake
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v17 -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v17 --parallel 2
+          ctest --test-dir /tmp/rune-v17 --output-on-failure
+      - name: Five-seed native paired benchmark
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. \
+            experiments/v17-scratch-benchmark.cpp -o /tmp/v17-bench
+          mkdir -p v17-results
+          /tmp/v17-bench 1000000 | tee v17-results/native_1m.csv
+          /tmp/v17-bench 4000000 | tee v17-results/native_4m.csv
+      - name: Preserve all timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v17-native-${{ matrix.runner }}
+          path: v17-results/*.csv
+          if-no-files-found: warn
+  sanitize:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: ASan and UBSan exact array differential
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined \
+            -I. -Irunesort_v17 runesort_v17/test_radix_scratch.cpp -o /tmp/v17-asan
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v17-asan
+      - name: Portable x86 without BMI2
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -I. -Irunesort_v17 \
+            runesort_v17/test_radix_scratch.cpp -o /tmp/v17-portable
+          /tmp/v17-portable
