@@ -1,0 +1,38 @@
+name: RUNE v14 ASan UBSan Sharded Qualification
+on:
+  push:
+    branches: [research/rune-v14-arm-spectrum-20261020]
+    paths:
+      - '.github/workflows/v14-sanitizer-sharded.yml'
+      - 'experiments/v14-generate-sanitizer-shard.py'
+      - 'runesort_v14/test_spectrum.cpp'
+      - 'runesort_v14/rune_sort.hpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bounded_shard:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        pattern: [0, 1, 2, 3, 4, 5]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print hardware, compiler, and source hashes
+        run: |
+          set -euo pipefail
+          uname -m
+          g++ --version
+          sha256sum runesort_v14/rune_sort.hpp runesort_v14/test_spectrum.cpp
+      - name: Generate one-sixth of canonical test source
+        run: |
+          set -euo pipefail
+          python3 experiments/v14-generate-sanitizer-shard.py /tmp/rune-v14-shard.cpp ${{ matrix.pattern }}
+      - name: Compile and run under ASan and UBSan
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined -Irunesort_v14 /tmp/rune-v14-shard.cpp -o /tmp/rune-v14-shard
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/rune-v14-shard
