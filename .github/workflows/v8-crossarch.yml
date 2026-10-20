@@ -1,0 +1,81 @@
+name: RUNE v8 boundary-focused ARM64/x86 comparison
+on:
+  push:
+    branches:
+      - research/rune-v8-two-stage-boundary-20261020
+    paths:
+      - 'experiments/v8-crossarch-competition.cpp'
+      - '.github/workflows/v8-crossarch.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04-arm, ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record hardware and compiler
+        shell: bash
+        run: |
+          set -euxo pipefail
+          uname -m
+          lscpu
+          g++ --version
+          head -n 25 /proc/cpuinfo
+      - name: Install Boost headers
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libboost-dev
+      - name: Fetch pinned comparator revisions
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/runesort-crossarch
+          cd /tmp/runesort-crossarch
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          echo "IPS4o=$(git -C ips4o rev-parse HEAD)"
+          echo "Highway=$(git -C highway rev-parse HEAD)"
+      - name: Build VQSort for native architecture
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cmake -S /tmp/runesort-crossarch/highway -B /tmp/runesort-crossarch/highway-build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/runesort-crossarch/highway-build --target hwy_contrib --parallel 2
+      - name: Compile native eight-way benchmark
+        shell: bash
+        run: |
+          set -euxo pipefail
+          g++ -O3 -std=c++20 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/runesort-crossarch/ips4o \
+            -I/tmp/runesort-crossarch/highway \
+            experiments/v8-crossarch-competition.cpp \
+            /tmp/runesort-crossarch/highway-build/libhwy_contrib.a \
+            /tmp/runesort-crossarch/highway-build/libhwy.a \
+            -latomic -o /tmp/runesort-v8-bench
+      - name: Run differential comparison at two sizes
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p experiment-results
+          /tmp/runesort-v8-bench 100000 4 | tee experiment-results/100k.csv
+          /tmp/runesort-v8-bench 1000000 4 | tee experiment-results/1m.csv
+      - name: Preserve CPU metadata and raw measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runesort-v8-crossarch-${{ matrix.runner }}
+          path: experiment-results/*.csv
+          if-no-files-found: warn
