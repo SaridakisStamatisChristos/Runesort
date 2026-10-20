@@ -1,0 +1,21 @@
+name: RUNE v16 Duplicate Gate Diagnostics
+on:
+  push:
+    branches: [research/rune-v16-cardinality-pilot-20261020]
+    paths:
+      - 'experiments/v16-gate-diagnostics.cpp'
+      - '.github/workflows/v16-gate-diagnostics.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Diagnose actual 5-seed gate outcomes
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. experiments/v16-gate-diagnostics.cpp -o /tmp/v16-gate
+          /tmp/v16-gate

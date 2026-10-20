@@ -1,0 +1,33 @@
+name: RUNE v16b Bounded Cardinality Sanitizers
+on:
+  push:
+    branches: [research/rune-v16-cardinality-pilot-20261020]
+    paths:
+      - '.github/workflows/v16-sanitize.yml'
+      - 'runesort_v16/rune_sort.hpp'
+      - 'runesort_v16/test_pilot_sanitize.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sanitizer:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Compile targeted gate under ASan and UBSan
+        run: |
+          set -euo pipefail
+          g++ --version
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined -Irunesort_v16 -I. runesort_v16/test_pilot_sanitize.cpp -o /tmp/v16-sanitize
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v16-sanitize
+      - name: Portable x86 no-BMI2
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -Irunesort_v16 -I. runesort_v16/test_pilot_sanitize.cpp -o /tmp/v16-portable
+          /tmp/v16-portable
