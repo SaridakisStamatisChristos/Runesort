@@ -561,13 +561,13 @@ inline void sort(uint64_t* a, size_t n) {
     }
     return;
   }
-  // v14 ARM64-only sparse16 integration from archived, independently tested
-  // candidate PR #5. The full-array variability mask proves at most 2^16
-  // distinct keys, below fifth-tier capacity. Failure cannot mutate a[].
-  // Avoid the expensive hash pass when packed digits are contiguous shifts.
+  // v14 ARM64-only sparse16 integration from archived candidate PR #5.
+  // The full-array mask proves <= 2^16 distinct values. Even contiguous
+  // sparse16 masks use the portable extract loop in compact-domain counting,
+  // so a packed-digit contiguity guard would incorrectly skip a faster path.
+  // The exact bounded hash engine leaves a[] unchanged on any rejection.
 #if defined(__aarch64__)
   if(n>=524288 && varied==16 &&
-     detail::packed_digits_need_extract(variable) &&
      detail::fifth_distinct_reconstruct(a,n))return;
 #endif
   // v13 ARM64-only experiment: avoid the O(popcount(mask)) portable
