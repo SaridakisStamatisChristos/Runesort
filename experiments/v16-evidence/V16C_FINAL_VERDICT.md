@@ -14,14 +14,14 @@ Source: frozen candidate commit `a0a25575931578de8aa6a871457944307d465caf` (base
 
 | CPU | Workload | v14 | v16c | VQSort | IPS4o |
 |---|---|---:|---:|---:|---:|
-| AMD EPYC x86 | K81,920 | 94.485 | **37.121** | 55.144 | 67.213 |
+| AMD EPYC 7763 x86 | K81,920 | 94.485 | **37.121** | 55.144 | 67.213 |
 | ARM Neoverse-N2 | K81,920 | 72.807 | **39.092** | 61.766 | 54.105 |
-| AMD EPYC x86 | K85,000 | 95.57 | 96.606 | **55.94** | 67.522 |
+| AMD EPYC 7763 x86 | K85,000 | 95.57 | 96.606 | **55.94** | 67.522 |
 | ARM Neoverse-N2 | K85,000 | 72.509 | 73.363 | 62.23 | **54.449** |
-| AMD EPYC x86 | Uniform64 | 123.576 | 123.494 | **55.347** | 109.191 |
+| AMD EPYC 7763 x86 | Uniform64 | 123.576 | 123.494 | **55.347** | 109.191 |
 | ARM Neoverse-N2 | Uniform64 | 73.31 | 75.187 | 75.96 | 81.678 |
 
-**K81,920 improved on 5/5 seeds on both architectures.** At K85,000, v16c is ~1% slower than v14 and remains slower than external sorters; K90K, K131K and random full-width inputs show no general advantage. This negative evidence is intentionally retained.
+**K81,920 improved on 5/5 seeds on both architectures.** The final x86 runner was **AMD EPYC 7763**, not the **AMD EPYC 9V45** used for the earlier v16b external benchmark; its reversal of the v16b/VQSort ranking is a hardware/run distinction, not evidence that v16c universally beats VQSort on x86. At K85,000, v16c is ~1% slower than v14 and remains slower than external sorters; K90K, K131K and random full-width inputs show no general advantage. This negative evidence is intentionally retained.
 
 ### Mechanism and boundaries
 V16a relaxed 16K-sample duplicate threshold but produced a K85K false positive. V16b added a separate larger 65K-sample pilot; two of five held-out K81,920 seeds still skipped due to an earlier 4,096-key rejection repeat gate. Instrumentation measured early repeats 108,89,105,100,97. V16c lowers that **early** condition from 100 to 80 only for N>=2M and retains *both* pilot conditions plus unchanged exact-capacity/hash collision validation; false pilot predictions can add cost but do not change correctness. The v16b report `V16B_VERDICT.md` remains available.
