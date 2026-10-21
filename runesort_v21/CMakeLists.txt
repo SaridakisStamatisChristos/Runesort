@@ -1,0 +1,6 @@
+add_library(runesort_v21 INTERFACE)
+target_include_directories(runesort_v21 INTERFACE . ..)
+target_compile_features(runesort_v21 INTERFACE cxx_std_17)
+add_executable(test_v21_msb test_msb_partition.cpp)
+target_link_libraries(test_v21_msb PRIVATE runesort_v21)
+add_test(NAME v21_msb_partition COMMAND test_v21_msb)
