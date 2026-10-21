@@ -1,0 +1,107 @@
+name: RUNE v23 Scatter Prefetch Qualification
+on:
+  push:
+    branches: [research/rune-v23-scatter-prefetch-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record provenance
+        run: |
+          set -euo pipefail
+          mkdir -p v23-results
+          { uname -a; lscpu; g++ --version; git rev-parse HEAD; } | tee v23-results/provenance.txt
+      - name: Verify complete CMake/CTest and differential
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v23 -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v23 --parallel 2
+          ctest --test-dir /tmp/rune-v23 --output-on-failure
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. runesort_v23/test_prefetch.cpp -o /tmp/v23-test
+          /tmp/v23-test
+      - name: Fetch immutable comparator sources
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune23-ext
+          cd /tmp/rune23-ext
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          test "$(git -C highway rev-parse HEAD)" = c3407ccaaecffa735c911cae3971efa02263211d
+          test "$(git -C ips4o rev-parse HEAD)" = 8d5a97bb4c4048a1eef18b537f191a31462b051a
+      - name: Build native pinned Highway comparator
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune23-ext/highway -B /tmp/rune23-ext/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune23-ext/build --target hwy_contrib --parallel 2
+      - name: Build exact same-array benchmark
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune23-ext/ips4o -I/tmp/rune23-ext/highway \
+            experiments/v23-scatter-prefetch-benchmark.cpp \
+            /tmp/rune23-ext/build/libhwy_contrib.a \
+            /tmp/rune23-ext/build/libhwy.a -latomic -o /tmp/v23-bench
+      - name: Qualify 1M and 4M five-seed experiments
+        run: |
+          set -euo pipefail
+          mkdir -p v23-results
+          /tmp/v23-bench 1000000 | tee v23-results/1m.csv
+          /tmp/v23-bench 4000000 | tee v23-results/4m.csv
+      - name: Validate full matrix and summarize paired seeds
+        run: |
+          set -euo pipefail
+          python3 experiments/v23-scatter-prefetch/summarize.py --isa "$(uname -m)" \
+            --output v23-results/paired_summary.csv v23-results/1m.csv v23-results/4m.csv
+          cat v23-results/paired_summary.csv
+      - name: Retain raw outputs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: v23-raw-${{ matrix.runner }}
+          path: v23-results/
+          if-no-files-found: warn
+  sanitizer:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check exact semantics under ASan and UBSan
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined \
+            -I. runesort_v23/test_prefetch.cpp -o /tmp/v23-san
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v23-san
+      - name: Compile portable no-prefetch fallback
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -DRUNE23_DISABLE_PREFETCH -I. runesort_v23/test_prefetch.cpp -o /tmp/v23-no-prefetch
+          /tmp/v23-no-prefetch
+      - name: x86 portable BMI2-off verification
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -I. runesort_v23/test_prefetch.cpp -o /tmp/v23-no-bmi2
+          /tmp/v23-no-bmi2

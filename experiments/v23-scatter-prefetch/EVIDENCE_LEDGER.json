@@ -1,0 +1,169 @@
+{
+  "experiment": "rune-v23-scatter-prefetch",
+  "benchmarked_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07",
+  "evidence_state": "EMPIRICALLY_VALIDATED within disclosed test/benchmark scope; not formal verification",
+  "novelty_state": "PRIOR_ART_FOUND: conventional software prefetch and LSD radix, no novelty claim",
+  "candidates": {
+    "RUNE23_prefetch32": {
+      "x86_primary_mechanism_gate": false,
+      "ARM_nonordered_portability_gate": false,
+      "primary_pinned_VQSort_gate": false,
+      "production_integration": "HOLD: no end-to-end dispatcher qualification",
+      "primary_x86": {
+        "isa": "x86_64",
+        "mode": "uniform64",
+        "n": "4000000",
+        "candidate": "RUNE23_prefetch32",
+        "candidate_median_ms": "95.735069",
+        "RUNE23_ablation0_median_ms": "101.453555",
+        "ratio_to_RUNE23_ablation0": "0.9491869847445977",
+        "wins_vs_RUNE23_ablation0": "5",
+        "RUNE22_radix16_median_ms": "100.113916",
+        "ratio_to_RUNE22_radix16": "0.9562613553144799",
+        "wins_vs_RUNE22_radix16": "5",
+        "RUNE17_fixed8_median_ms": "123.164655",
+        "ratio_to_RUNE17_fixed8": "0.7690436902213756",
+        "wins_vs_RUNE17_fixed8": "5",
+        "VQSort_median_ms": "54.61166",
+        "ratio_to_VQSort": "1.7501468341697446",
+        "wins_vs_VQSort": "0"
+      },
+      "primary_ARM": {
+        "isa": "aarch64",
+        "mode": "uniform64",
+        "n": "4000000",
+        "candidate": "RUNE23_prefetch32",
+        "candidate_median_ms": "126.813058",
+        "RUNE23_ablation0_median_ms": "90.112803",
+        "ratio_to_RUNE23_ablation0": "1.3980613707792926",
+        "wins_vs_RUNE23_ablation0": "0",
+        "RUNE22_radix16_median_ms": "90.072277",
+        "ratio_to_RUNE22_radix16": "1.407903321906695",
+        "wins_vs_RUNE22_radix16": "0",
+        "RUNE17_fixed8_median_ms": "74.190159",
+        "ratio_to_RUNE17_fixed8": "1.7053123188468708",
+        "wins_vs_RUNE17_fixed8": "0",
+        "VQSort_median_ms": "75.462608",
+        "ratio_to_VQSort": "1.6807555453489476",
+        "wins_vs_VQSort": "0"
+      },
+      "ARM_failed_cells": [
+        {
+          "mode": "uniform64",
+          "n": 1000000,
+          "ratio_to_v22": 1.0745607465925755
+        },
+        {
+          "mode": "uniform64",
+          "n": 4000000,
+          "ratio_to_v22": 1.407903321906695
+        },
+        {
+          "mode": "random32",
+          "n": 4000000,
+          "ratio_to_v22": 1.1454278269623785
+        },
+        {
+          "mode": "K85000",
+          "n": 1000000,
+          "ratio_to_v22": 1.0529061654223009
+        },
+        {
+          "mode": "K85000",
+          "n": 4000000,
+          "ratio_to_v22": 1.1188856205531588
+        }
+      ]
+    },
+    "RUNE23_prefetch128": {
+      "x86_primary_mechanism_gate": true,
+      "ARM_nonordered_portability_gate": false,
+      "primary_pinned_VQSort_gate": false,
+      "production_integration": "HOLD: no end-to-end dispatcher qualification",
+      "primary_x86": {
+        "isa": "x86_64",
+        "mode": "uniform64",
+        "n": "4000000",
+        "candidate": "RUNE23_prefetch128",
+        "candidate_median_ms": "91.310307",
+        "RUNE23_ablation0_median_ms": "101.453555",
+        "ratio_to_RUNE23_ablation0": "0.9003532186725839",
+        "wins_vs_RUNE23_ablation0": "5",
+        "RUNE22_radix16_median_ms": "100.113916",
+        "ratio_to_RUNE22_radix16": "0.9120640830791195",
+        "wins_vs_RUNE22_radix16": "5",
+        "RUNE17_fixed8_median_ms": "123.164655",
+        "ratio_to_RUNE17_fixed8": "0.742468715741528",
+        "wins_vs_RUNE17_fixed8": "5",
+        "VQSort_median_ms": "54.61166",
+        "ratio_to_VQSort": "1.6694054163524785",
+        "wins_vs_VQSort": "0"
+      },
+      "primary_ARM": {
+        "isa": "aarch64",
+        "mode": "uniform64",
+        "n": "4000000",
+        "candidate": "RUNE23_prefetch128",
+        "candidate_median_ms": "126.965037",
+        "RUNE23_ablation0_median_ms": "90.112803",
+        "ratio_to_RUNE23_ablation0": "1.408578194670864",
+        "wins_vs_RUNE23_ablation0": "0",
+        "RUNE22_radix16_median_ms": "90.072277",
+        "ratio_to_RUNE22_radix16": "1.4072432571025824",
+        "wins_vs_RUNE22_radix16": "0",
+        "RUNE17_fixed8_median_ms": "74.190159",
+        "ratio_to_RUNE17_fixed8": "1.7148939794023088",
+        "wins_vs_RUNE17_fixed8": "0",
+        "VQSort_median_ms": "75.462608",
+        "ratio_to_VQSort": "1.6771169180129772",
+        "wins_vs_VQSort": "0"
+      },
+      "ARM_failed_cells": [
+        {
+          "mode": "uniform64",
+          "n": 1000000,
+          "ratio_to_v22": 1.0973362090899017
+        },
+        {
+          "mode": "uniform64",
+          "n": 4000000,
+          "ratio_to_v22": 1.4072432571025824
+        },
+        {
+          "mode": "random32",
+          "n": 4000000,
+          "ratio_to_v22": 1.1406088323231425
+        },
+        {
+          "mode": "K85000",
+          "n": 1000000,
+          "ratio_to_v22": 1.0515311896940638
+        },
+        {
+          "mode": "K85000",
+          "n": 4000000,
+          "ratio_to_v22": 1.1136230688188322
+        }
+      ]
+    }
+  },
+  "verdict": "Conditional x86-only mechanism GO for prefetch128 follow-up; NO-GO unconditional integration or VQSort superiority; no merge",
+  "limitations": [
+    "Virtualized runners, one run per ISA",
+    "Historic pinned upstream revisions, not latest-version SOTA",
+    "Five fixed seeds; first reused from exploratory local pilot, not wholly held-out",
+    "No PMU/counter attribution",
+    "No n>UINT32_MAX allocation test",
+    "Forced-worker controls do not represent public dispatcher latency"
+  ],
+  "archived_sha256": {
+    "arm64_1m.csv": "275e2e3f86834a34be110c6c0116c30c5f280b2e5e0ca03e33fcf27750d8ba85",
+    "arm64_4m.csv": "666f1120b75b7eae163f45a25ce03ef517f0b75590417d4a3aba86112d2f820a",
+    "arm64_paired_summary.csv": "76e1e0884889ecc5704b557fda4815d631757682315995468317d25ba7fd84a5",
+    "arm64_provenance.txt": "46962c2458e8434c46de28f2b6ddfa7dbacdeecb36a915afd4a8fd2b400e1f31",
+    "x86_64_1m.csv": "243c531f1871fcaf6c04326944823f601ff125793add0ef7abe6ffcb6c422535",
+    "x86_64_4m.csv": "8ac3990ac700a023872ce8c458dce9364e0614d50745553bdb3b823045559209",
+    "x86_64_paired_summary.csv": "73c8a17ec28f3ddc85b4ad3562c1fad468d1d891f637a5107ddac4793e73abf8",
+    "x86_64_provenance.txt": "3e6ea9835c9cbab8623b6d91ed36d0d1c5f3e42a1a7110c911e20c1984a90f88"
+  }
+}
