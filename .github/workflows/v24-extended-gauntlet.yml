@@ -1,0 +1,91 @@
+name: RUNE v24 Extended 33-Mode SOTA Gauntlet
+on:
+  push:
+    branches: [research/rune-v24-extended-gauntlet-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  competition:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        group: [entropy, cardinality, ordered]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record source and host provenance
+        run: |
+          set -euo pipefail
+          mkdir -p matrix-data
+          { uname -a; lscpu; g++ --version; git rev-parse HEAD; } | tee matrix-data/provenance.txt
+      - name: Install Boost headers
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libboost-dev
+          dpkg-query -W libboost-dev | tee -a matrix-data/provenance.txt
+      - name: Fetch immutable comparator revisions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune-gauntlet
+          cd /tmp/rune-gauntlet
+          git init cafs
+          git -C cafs remote add origin https://github.com/kexibq-official/cafs-lib.git
+          git -C cafs fetch --depth=1 origin 13488afef446ae88e7ad631ec6f862def896094a
+          git -C cafs checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin 3a5844a43b095751a4870ac0b66940d71ab60c38
+          git -C highway checkout --detach FETCH_HEAD
+          test "$(git -C cafs rev-parse HEAD)" = 13488afef446ae88e7ad631ec6f862def896094a
+          test "$(git -C ips4o rev-parse HEAD)" = 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          test "$(git -C highway rev-parse HEAD)" = 3a5844a43b095751a4870ac0b66940d71ab60c38
+          for x in cafs ips4o highway; do git -C "$x" rev-parse HEAD; done | tee -a "$GITHUB_WORKSPACE/matrix-data/provenance.txt"
+      - name: Compile pinned Highway
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune-gauntlet/highway -B /tmp/rune-gauntlet/hwy-build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune-gauntlet/hwy-build --target hwy_contrib --parallel 2
+      - name: Compile 18/19 sorting contenders
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune-gauntlet/cafs/include \
+            -I/tmp/rune-gauntlet/ips4o -I/tmp/rune-gauntlet/highway \
+            experiments/gauntlet-v24/competition.cpp \
+            /tmp/rune-gauntlet/hwy-build/libhwy_contrib.a \
+            /tmp/rune-gauntlet/hwy-build/libhwy.a -latomic \
+            -o /tmp/rune-gauntlet/competition
+      - name: Run exact oracle per group on all sizes
+        run: |
+          set -euo pipefail
+          for n in 100000 1000000 4000000; do
+            /tmp/rune-gauntlet/competition "${{ matrix.group }}" "$n" 3 3 | tee "matrix-data/${{ matrix.group }}_$n.csv"
+            python3 experiments/gauntlet-v24/verify.py \
+              "matrix-data/${{ matrix.group }}_$n.csv" "${{ matrix.group }}" "$n"
+          done
+      - name: Paired within-host per-mode comparison
+        run: |
+          set -euo pipefail
+          python3 experiments/gauntlet-v24/summarize.py "$(uname -m)" \
+            "${{ matrix.group }}" matrix-data/paired_summary.csv \
+            matrix-data/${{ matrix.group }}_100000.csv \
+            matrix-data/${{ matrix.group }}_1000000.csv \
+            matrix-data/${{ matrix.group }}_4000000.csv
+      - name: Retain exact data even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rune-v24-matrix-${{ matrix.runner }}-${{ matrix.group }}
+          path: matrix-data/
+          if-no-files-found: warn
