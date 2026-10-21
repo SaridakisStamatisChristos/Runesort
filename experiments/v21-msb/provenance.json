@@ -1,0 +1,59 @@
+{
+  "study": "RUNE v21",
+  "qualified_commit": "e28641acad4095460c38062e7aa06f6b335b1e07",
+  "base_v17_commit": "927d29b778b75f67e8a908cffa914a5f6e88929f",
+  "ci_native_sanitizer_run": 39521017146,
+  "ci_standard_push_run": 39521017115,
+  "ci_standard_pr_run": 39521062938,
+  "cpu": [
+    {
+      "arch": "x86_64",
+      "model": "AMD EPYC 9V74",
+      "github_job": 118964586399
+    },
+    {
+      "arch": "aarch64",
+      "model": "Neoverse-N2",
+      "github_job": 118964586307
+    }
+  ],
+  "baseline_cpu_v20": "AMD EPYC 7763 (distinct model; no cross-run attribution)",
+  "compiler": "GCC 13.3",
+  "flags": "-std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "seeds": [
+    913103,
+    913109,
+    913117,
+    913123,
+    913129
+  ],
+  "n_sizes": [
+    1000000,
+    4000000
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "algorithms": [
+    "RUNE17_full",
+    "RUNE17_fixed8",
+    "RUNE21_bucket_radix7",
+    "RUNE21_bucket_stdsort",
+    "VQSort",
+    "IPS4o_seq",
+    "std_sort"
+  ],
+  "correct_sort_outputs": 700,
+  "sort_outputs": 700,
+  "paired_groups": 20,
+  "one_warmup": true,
+  "measured_repetitions": 3,
+  "vqsort_commit": "c3407ccaaecffa735c911cae3971efa02263211d",
+  "ips4o_commit": "8d5a97bb4c4048a1eef18b537f191a31462b051a",
+  "verdict": "conditional research survival uniform64; hold merge due random32 and ordered regressions",
+  "no_release_claim": true
+}
