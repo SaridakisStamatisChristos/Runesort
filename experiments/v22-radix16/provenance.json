@@ -1,0 +1,46 @@
+{
+  "study": "RUNE v22",
+  "qualified_source_commit": "80d0415c60844dbedd79f6a5702ba861ec1b74b8",
+  "study_run": 39550955682,
+  "push_CI": 39550955569,
+  "pr_CI": 39550998337,
+  "x86_cpu": "AMD EPYC 9V74 4vCPU",
+  "ARM_cpu": "Neoverse-N2 4vCPU",
+  "compiler": "GCC 13.3",
+  "flags": "-std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "pinned_highway": "c3407ccaaecffa735c911cae3971efa02263211d",
+  "pinned_ips4o": "8d5a97bb4c4048a1eef18b537f191a31462b051a",
+  "seeds": [
+    310901,
+    310907,
+    310913,
+    310919,
+    310927
+  ],
+  "scales": [
+    1000000,
+    4000000
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "algorithms": [
+    "RUNE17_full",
+    "RUNE17_fixed8",
+    "RUNE22_fused16",
+    "RUNE22_perpass16",
+    "VQSort",
+    "IPS4o_seq"
+  ],
+  "trial_repetitions": 3,
+  "warmups": 1,
+  "measured_rows": 600,
+  "correct_measured_rows": 600,
+  "paired_summary_groups": 20,
+  "decision": "NO-GO; retain evidence, no production changes or merges",
+  "scope": "Virtual hosted x86/ARM; cannot generalize to newest VQSort or bare metal"
+}
