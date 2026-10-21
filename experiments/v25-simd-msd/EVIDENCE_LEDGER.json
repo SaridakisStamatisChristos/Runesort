@@ -1,0 +1,128 @@
+{
+  "measured_source_sha": "986253c5764c5b242c955addee5f0555aed61725",
+  "archive_policy": "Reports/data/documentation only; measured implementation and frozen gates unchanged.",
+  "reproducibility_level": "Executed correctness and reproduced fallback summaries; SIMD performance not qualified.",
+  "source_sha256": {
+    ".github/workflows/v25-simd-msd.yml": "3e6291ead5f88e12063b0bea2ea7455116839a46a6968299be1ab890b7d0215b",
+    "CMakeLists.txt": "895e80a8e8fe28a6551fcf8e79710f23d1aaf29044372e01c31754a0926f7e6b",
+    "experiments/v25-simd-msd-benchmark.cpp": "ee5081c0ff391b61617a8a7f7f3ba828011238bf392db88debacc94a41ad7827",
+    "experiments/v25-simd-msd/PLAN.md": "b7a624ef18d460172a2763946d8e9c279cd75c7169a1302388befc0f128b3b85",
+    "experiments/v25-simd-msd/evaluate.py": "86c69dc4dafac95fcfa52330f7ee10f44a866864f4defcd950431ef6de466ae0",
+    "experiments/v25-simd-msd/local_provenance.txt": "724cdf6e4f6d06a6dd8510b9d9635e71610326dfbd6d536fb8d3d754a5eb8cd1",
+    "experiments/v25-simd-msd/local_screening.csv": "00702e98826c2fa9013b29bcca307474698504a5b19cecdd7e98853af2d83fa4",
+    "experiments/v25-simd-msd/prototype_cache.hpp": "198aa8ebbe100fd83189f70708d3bf2222ce83d0de10c9d06c9ee444296871bc",
+    "experiments/v25-simd-msd/prototype_probe.cpp": "cbeea023867481adfa13055d3d9503507d68bea8b7c10b690e2ed659c47d2d21",
+    "experiments/v25-simd-msd/summarize.py": "089b183d7dfeb28d7916581854e6d97c9dd6e209debceebc10ea1772b473fea5",
+    "experiments/v25-simd-msd/verify_inheritance.py": "aedb72c7166229ff1d6b3cd472b9f5d423c40c4fa92e473ceb3f0a98895ea064",
+    "runesort_v17/rune_sort.hpp": "a33717a794f4faa1981ad6c4d863f7bf81f3bf4152980f5b84cca5c7422c57b3",
+    "runesort_v22/wide_radix.hpp": "7e4387f035ecacf47c8d89f359e48a1c1c7876ddaec844e3648087fe3eff8448",
+    "runesort_v23/prefetch_radix.hpp": "635c9d629fe6b85eec61aa02e6130ae6b2fa5abcec1b111b0f57bc7086fa47c4",
+    "runesort_v24/rune_sort.hpp": "ac24d8fb810c0c3f4541d8b8493eb03fe904004d3494934a4d24720870dd9f72",
+    "runesort_v25/CMakeLists.txt": "4fc46213fa36589ecd75a3981586806a3836effd8602c4928b042facfc271718",
+    "runesort_v25/rune_sort.hpp": "ed6ed2d757710ccbf079e537aa78d83f3ff1f824495c1d9fa5b7359bad5f60d1",
+    "runesort_v25/simd_msd.hpp": "fac16d666301a8513f730954414ff0ad7b168afb1fad857c4d575f6bde539e88",
+    "runesort_v25/test_simd.cpp": "d635b5046004918f3583bb9f705c4c11fd5f8abb14b0bc9623bf6eb2e8b2187f"
+  },
+  "artifact_sha256": {
+    "experiments/v25-simd-msd/CI_RESULTS.json": "6ea48c17e88a1e8fbaeac0d2890dfc37cac1a3f9525c45962aa899b9d6a0b490",
+    "experiments/v25-simd-msd/FINAL_VERDICT.md": "1e44cdda55305ff359fc3165e01d5a28c2a3962e02ca6f907f4dd48976475ecc",
+    "experiments/v25-simd-msd/GATES.json": "e207ca0cbc6e2060edf7ab0a2f122dcb3b36d1c15e91b5dacc84f8d970b78726",
+    "experiments/v25-simd-msd/PLAN.md": "b7a624ef18d460172a2763946d8e9c279cd75c7169a1302388befc0f128b3b85",
+    "experiments/v25-simd-msd/aarch64/1m.csv": "32dedc26ab29b5ebf0abf7d2d92eb646acb8e935247143a3e7849c7ff9268716",
+    "experiments/v25-simd-msd/aarch64/4m.csv": "dfd2f3e25fe32791ce39ac2005aba6e5b466082c7cae1e88f5a95bff35b29e0e",
+    "experiments/v25-simd-msd/aarch64/64k.csv": "f8aa169aa5e6340f9f53cba287c29e668fd9164eb2e0c6dedbc00c4f1fb9354e",
+    "experiments/v25-simd-msd/aarch64/below_gate.csv": "5d133726c6663cf17a71ebf729ca7776dfa4ff42944cff4be4e3ca340745ed05",
+    "experiments/v25-simd-msd/aarch64/paired_summary.csv": "a5c572133986f090c76bd3078ce7206a61a5bb7775b3bf09e5b070c528d2002f",
+    "experiments/v25-simd-msd/aarch64/provenance.txt": "67d721e02d0ce9ef72a8a8976c9db4ea6831041a1b057c03942e3f6af4d0c841",
+    "experiments/v25-simd-msd/evaluate.py": "86c69dc4dafac95fcfa52330f7ee10f44a866864f4defcd950431ef6de466ae0",
+    "experiments/v25-simd-msd/local_pilot_1m.csv": "3dc68f1d7d7fd9bfa160d81f77ff3fe7a0f864413d02490757971fe64093612d",
+    "experiments/v25-simd-msd/local_pilot_4m.csv": "8be03991bb0befb3f9c2a335be5cfeccc1e278bcce6b977dc7fe4d0747b0dd0a",
+    "experiments/v25-simd-msd/local_pilot_provenance.txt": "e2809cda7e2d08d96609ff1c993d7e95c321f3414180ba050c7507a65436d1f7",
+    "experiments/v25-simd-msd/local_provenance.txt": "724cdf6e4f6d06a6dd8510b9d9635e71610326dfbd6d536fb8d3d754a5eb8cd1",
+    "experiments/v25-simd-msd/local_screening.csv": "00702e98826c2fa9013b29bcca307474698504a5b19cecdd7e98853af2d83fa4",
+    "experiments/v25-simd-msd/prototype_cache.hpp": "198aa8ebbe100fd83189f70708d3bf2222ce83d0de10c9d06c9ee444296871bc",
+    "experiments/v25-simd-msd/prototype_probe.cpp": "cbeea023867481adfa13055d3d9503507d68bea8b7c10b690e2ed659c47d2d21",
+    "experiments/v25-simd-msd/summarize.py": "089b183d7dfeb28d7916581854e6d97c9dd6e209debceebc10ea1772b473fea5",
+    "experiments/v25-simd-msd/verify_inheritance.py": "aedb72c7166229ff1d6b3cd472b9f5d423c40c4fa92e473ceb3f0a98895ea064",
+    "experiments/v25-simd-msd/x86_64/1m.csv": "cd085c863a76d6a53f36fadcf37429c1912e01ecbbdd8549b280e0bc7d723c4b",
+    "experiments/v25-simd-msd/x86_64/4m.csv": "57879f0414215f81f0f92b4425b2a0281724cd1d2eb64579f32074e3673abbe7",
+    "experiments/v25-simd-msd/x86_64/64k.csv": "1ca208dd78bb2a35240ab07a186dfe9397cddfe3bbc4345ce6166b4ecbc0a60a",
+    "experiments/v25-simd-msd/x86_64/below_gate.csv": "60cf8b40c71c2931fde964218e8afc12830a68be87db15db2775510237908c05",
+    "experiments/v25-simd-msd/x86_64/paired_summary.csv": "146af608370b85c73c517b047520d7653f865166a2c20b1c43d0a5866d1b0499",
+    "experiments/v25-simd-msd/x86_64/provenance.txt": "b1cb1bce2d60d973233be36440cc1530abd8eef3db4521090328e5ec1035c102"
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "SIMD worker passes targeted exact-output, network and protected-page checks locally.",
+      "status": "observed, bounded tests",
+      "evidence": [
+        "runesort_v25/test_simd.cpp",
+        "FINAL_VERDICT.md"
+      ],
+      "scope": "Local Intel Xeon 8573C; optimized, ASan/UBSan and baseline-x86 builds. Local sanitizer leak detection disabled."
+    },
+    {
+      "id": "C2",
+      "claim": "Both native CI full suites and both sanitizer jobs pass.",
+      "status": "verified",
+      "evidence": [
+        "CI_RESULTS.json"
+      ],
+      "scope": "Fallback paths on AMD EPYC 7763 and ARM Neoverse-N2; not SIMD execution."
+    },
+    {
+      "id": "C3",
+      "claim": "All predeclared 78 regression guards pass.",
+      "status": "verified",
+      "evidence": [
+        "GATES.json",
+        "x86_64/paired_summary.csv",
+        "aarch64/paired_summary.csv"
+      ],
+      "scope": "Fallback qualification only; largest ratios 1.034733 x86, 1.015584 ARM across all 80 cells."
+    },
+    {
+      "id": "C4",
+      "claim": "SIMD beats v17/v24 or the stdleaf ablation under the frozen full protocol.",
+      "status": "not qualified",
+      "evidence": [
+        "GATES.json"
+      ],
+      "scope": "CI runner lacks required ISA; local pilot variability prevents substitution."
+    },
+    {
+      "id": "C5",
+      "claim": "Supplementary SIMD pilot has lower candidate medians than v17/v24 and higher medians than pinned VQSort.",
+      "status": "descriptive only",
+      "evidence": [
+        "local_pilot_1m.csv",
+        "local_pilot_4m.csv",
+        "local_pilot_provenance.txt"
+      ],
+      "scope": "Single seed, three trials per algorithm; candidate 1M timing range exceeds 28-fold. No precise speedup claim. Local test activity may overlap timing."
+    },
+    {
+      "id": "C6",
+      "claim": "Novel algorithm or universal SOTA.",
+      "status": "unsupported; not claimed",
+      "evidence": [
+        "PLAN.md",
+        "FINAL_VERDICT.md"
+      ],
+      "scope": "Known mechanisms; incomplete comparator coverage and missing stable AVX-512 qualification."
+    }
+  ],
+  "comparators": {
+    "highway": "3a5844a43b095751a4870ac0b66940d71ab60c38",
+    "ips4o": "8d5a97bb4c4048a1eef18b537f191a31462b051a"
+  },
+  "limitations": [
+    "Virtualized hosts; no stable SIMD qualification",
+    "No measured F5 or Intel x86-simd-sort comparator",
+    "No confidence interval or statistical significance claim",
+    "Earlier AMD AVX-512-capable counterexample not requalified",
+    "No default integration, merge, or release",
+    "Local supplementary pilot may overlap ongoing full-project tests; not qualification"
+  ]
+}

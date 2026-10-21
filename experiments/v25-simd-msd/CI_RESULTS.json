@@ -1,0 +1,153 @@
+{
+  "benchmarked_sha": "986253c5764c5b242c955addee5f0555aed61725",
+  "execution_layer": "ChatGPT-native tools; OmO runtime reported not installed; no OmO worker execution claimed",
+  "qualification_run": 39602570271,
+  "jobs": [
+    {
+      "id": 119230507149,
+      "name": "sanitizer (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570271/job/119230507149"
+    },
+    {
+      "id": 119230507366,
+      "name": "native (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570271/job/119230507366"
+    },
+    {
+      "id": 119230507438,
+      "name": "native (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570271/job/119230507438"
+    },
+    {
+      "id": 119230507584,
+      "name": "sanitizer (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570271/job/119230507584"
+    },
+    {
+      "id": 119230521592,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602574302/job/119230521592"
+    },
+    {
+      "id": 119230506049,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570038/job/119230506049"
+    }
+  ],
+  "workflow_runs": [
+    {
+      "id": 39602574302,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "pull_request",
+      "head_sha": "986253c5764c5b242c955addee5f0555aed61725",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602574302"
+    },
+    {
+      "id": 39602570038,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "986253c5764c5b242c955addee5f0555aed61725",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570038"
+    },
+    {
+      "id": 39602570271,
+      "name": "RUNE v25 SIMD MSD Qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "986253c5764c5b242c955addee5f0555aed61725",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39602570271"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12347645772,
+      "node_id": "MDg6QXJ0aWZhY3QxMjM0NzY0NTc3Mg==",
+      "name": "v25-raw-ubuntu-24.04-arm",
+      "size_in_bytes": 37494,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12347645772",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12347645772/zip",
+      "expired": false,
+      "digest": "sha256:533b79ba40997fb0b13b2572306df198996290f37b53f32ecd6c62cb4a87ae24",
+      "created_at": "2026-10-21T12:54:22Z",
+      "updated_at": "2026-10-21T12:54:22Z",
+      "expires_at": "2027-01-19T12:48:27Z",
+      "workflow_run": {
+        "id": 39602570271,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v25-simd-msd-20261021",
+        "head_sha": "986253c5764c5b242c955addee5f0555aed61725"
+      }
+    },
+    {
+      "id": 12347092246,
+      "node_id": "MDg6QXJ0aWZhY3QxMjM0NzA5MjI0Ng==",
+      "name": "v25-raw-ubuntu-24.04",
+      "size_in_bytes": 38663,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12347092246",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12347092246/zip",
+      "expired": false,
+      "digest": "sha256:209155c11e7ce9087e32a51cdc931331246391c681201e9244ec23f24c5622ff",
+      "created_at": "2026-10-21T12:58:00Z",
+      "updated_at": "2026-10-21T12:58:00Z",
+      "expires_at": "2027-01-19T12:48:27Z",
+      "workflow_run": {
+        "id": 39602570271,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v25-simd-msd-20261021",
+        "head_sha": "986253c5764c5b242c955addee5f0555aed61725"
+      }
+    }
+  ],
+  "verification": {
+    "artifact_zip_sha256_verified": true,
+    "summaries_byte_identical": true,
+    "independent_summary_rows_verified": 160,
+    "qualification_rows": 2400,
+    "measured_sorts": 7200,
+    "verified_warmups": 2400,
+    "ci_runtime_simd_available": false,
+    "local_runtime_simd_available": true
+  },
+  "verification_log_excerpts": {
+    "x86": [
+      "2026-10-21T12:48:32.4425999Z Model name:                              AMD EPYC 7763 64-Core Processor",
+      "2026-10-21T12:51:08.6452193Z 100% tests passed, 0 tests failed out of 30",
+      "2026-10-21T12:51:14.1016073Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails",
+      "2026-10-21T12:57:59.9960199Z x86_64: validated 1200 observations / 3600 measured sorts, plus 1200 verified warmups; wrote v25-results/paired_summary.csv"
+    ],
+    "arm": [
+      "2026-10-21T12:48:34.8772607Z Model name:                              Neoverse-N2",
+      "2026-10-21T12:50:14.2586670Z 100% tests passed, 0 tests failed out of 30",
+      "2026-10-21T12:50:17.6154787Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails",
+      "2026-10-21T12:54:21.8054893Z aarch64: validated 1200 observations / 3600 measured sorts, plus 1200 verified warmups; wrote v25-results/paired_summary.csv"
+    ],
+    "sanitizer_x86": [
+      "2026-10-21T12:48:44.9905953Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails",
+      "2026-10-21T12:48:48.3770528Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails",
+      "2026-10-21T12:48:52.4238882Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails"
+    ],
+    "sanitizer_arm": [
+      "2026-10-21T12:49:58.2215296Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails",
+      "2026-10-21T12:50:01.1706660Z v25 OK: simd=0, 284 exact arrays, 0 network cases, 129 protected-page tails"
+    ]
+  }
+}
