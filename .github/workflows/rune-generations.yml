@@ -1,0 +1,46 @@
+name: RUNE Historical Generations Competition
+on:
+  push:
+    branches: [research/rune-generations-benchmark-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compete:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build and record provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p generations-results
+          { uname -a; lscpu; g++ --version; git rev-parse HEAD; } | tee generations-results/provenance.txt
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -pthread -Wall -Wextra             -I. experiments/generations/benchmark.cpp -o /tmp/rune-generations
+      - name: Run exact-oracle same-input comparison (1M)
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/rune-generations 1000000 | tee generations-results/1m.csv
+      - name: Run exact-oracle same-input comparison (4M)
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/rune-generations 4000000 | tee generations-results/4m.csv
+      - name: Enforce full matrix and seed-paired summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 experiments/generations/summarize.py --isa "$(uname -m)"             --output generations-results/summary.csv generations-results/1m.csv generations-results/4m.csv
+      - name: Archive raw trials regardless of success
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: generations-${{ matrix.runner }}
+          path: generations-results/
+          if-no-files-found: warn
