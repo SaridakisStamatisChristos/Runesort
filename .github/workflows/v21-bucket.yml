@@ -1,0 +1,101 @@
+name: RUNE v21 MSD Bucket-Local Qualification
+on:
+  push:
+    branches: [research/rune-v21-msd-bucket-local-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record CPU and compiler provenance
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          g++ --version
+          git rev-parse HEAD
+      - name: Verify complete existing CMake/CTest and new candidate
+        run: |
+          set -euo pipefail
+          cmake -S . -B /tmp/rune-v21 -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v21 --parallel 2
+          ctest --test-dir /tmp/rune-v21 --output-on-failure
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. \
+            runesort_v21/test_bucket_local.cpp -o /tmp/v21-test
+          /tmp/v21-test
+      - name: Fetch pinned source for independent comparators
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune21-ext
+          cd /tmp/rune21-ext
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          test "$(git -C highway rev-parse HEAD)" = c3407ccaaecffa735c911cae3971efa02263211d
+          test "$(git -C ips4o rev-parse HEAD)" = 8d5a97bb4c4048a1eef18b537f191a31462b051a
+      - name: Compile pinned Highway VQSort library
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune21-ext/highway -B /tmp/rune21-ext/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune21-ext/build --target hwy_contrib --parallel 2
+      - name: Build exact paired competition
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune21-ext/ips4o -I/tmp/rune21-ext/highway \
+            experiments/v21-bucket-benchmark.cpp \
+            /tmp/rune21-ext/build/libhwy_contrib.a \
+            /tmp/rune21-ext/build/libhwy.a -latomic -o /tmp/v21-comp
+      - name: Measure 1M and 4M independently verified arrays
+        run: |
+          set -euo pipefail
+          mkdir -p v21-results
+          /tmp/v21-comp 1000000 | tee v21-results/1m.csv
+          /tmp/v21-comp 4000000 | tee v21-results/4m.csv
+      - name: Archive all raw rows
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v21-raw-${{ matrix.runner }}
+          path: v21-results/*.csv
+          if-no-files-found: warn
+  sanitizers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: ASan UBSan independent exact differential
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer \
+            -fsanitize=address,undefined -I. \
+            runesort_v21/test_bucket_local.cpp -o /tmp/v21-san
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v21-san
+      - name: Native portable x86 without BMI2
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -I. \
+            runesort_v21/test_bucket_local.cpp -o /tmp/v21-no-bmi2
+          /tmp/v21-no-bmi2

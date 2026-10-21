@@ -1,0 +1,49 @@
+{
+  "research": "RUNE v21",
+  "tested_code_commit": "5507ae7033bf9957d83f8f7e83bce62351bf41cf",
+  "archival_parent": "d172516a691d82914b432a8d22bbaef55d828f91",
+  "run_research": 39549531266,
+  "run_push": 39549531138,
+  "run_PR": 39549573225,
+  "job_x86": 119055310190,
+  "job_arm": 119055310438,
+  "arch": [
+    "x86_64 AMD EPYC 7763",
+    "ARM64 Neoverse-N2"
+  ],
+  "compiler_flags": "g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "highway_sha": "c3407ccaaecffa735c911cae3971efa02263211d",
+  "ips4o_sha": "8d5a97bb4c4048a1eef18b537f191a31462b051a",
+  "seeds": [
+    20270101,
+    20270103,
+    20270109,
+    20270111,
+    20270117
+  ],
+  "models": [
+    "RUNE17_full",
+    "RUNE17_fixed8",
+    "RUNE21_bucket8",
+    "RUNE21_bucket12",
+    "VQSort",
+    "IPS4o_seq"
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "sizes": [
+    1000000,
+    4000000
+  ],
+  "warmups": 1,
+  "repetitions": 3,
+  "measured_rows": 600,
+  "correct_rows": 600,
+  "differential_oracle_arrays_per_arch": 355,
+  "verdict": "NO-GO for bucket8 and bucket12; preserve evidence, do not merge"
+}
