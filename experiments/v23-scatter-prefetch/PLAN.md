@@ -33,6 +33,10 @@ No outcome authorizes automatic production integration: full public dispatcher
 end-to-end qualification is a separate prerequisite. Sorted/alternating forced
 radix timings are controls, not public-RUNE latency.
 
+The first local exploratory pilot reused the first listed seed. Consequently
+these five seeds are fixed CI qualification inputs, not a wholly held-out
+statistical test set. No candidate or threshold was selected from CI timings.
+
 ## Safety/correctness argument
 
 Each digit uses exact counts, exclusive bucket prefixes, stable increasing

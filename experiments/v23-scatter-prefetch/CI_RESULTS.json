@@ -1,0 +1,85 @@
+{
+  "benchmarked_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07",
+  "execution_layer": "ChatGPT-native OmO fallback; real runtime probe installed=false",
+  "qualification_run": 39555422531,
+  "jobs": [
+    {
+      "id": 119073957831,
+      "name": "native (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119073957966,
+      "name": "native (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119073958030,
+      "name": "sanitizer (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119073958125,
+      "name": "sanitizer (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "workflow_runs": [
+    {
+      "id": 39555455981,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "pull_request",
+      "head_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39555455981"
+    },
+    {
+      "id": 39555422432,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39555422432"
+    },
+    {
+      "id": 39555422531,
+      "name": "RUNE v23 Scatter Prefetch Qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39555422531"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12326100925,
+      "name": "v23-raw-ubuntu-24.04",
+      "digest": "sha256:1e15894d5e01658ec99ebe074649efb0b6e8d63bf985e0f162ae6c942ac6b6e7",
+      "size_in_bytes": 15429,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12326100925",
+      "head_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07"
+    },
+    {
+      "id": 12326045655,
+      "name": "v23-raw-ubuntu-24.04-arm",
+      "digest": "sha256:002a20ab965fd0024a4c129674fa9b763548d4da47c4b7446dcc91c0246981ae",
+      "size_in_bytes": 14891,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12326045655",
+      "head_sha": "6566ed06c6258cb34534d61564df1f0ffd6b8b07"
+    }
+  ],
+  "local_verification": {
+    "ctest": "28/28 passed",
+    "differential": "388 arrays plus 30 guarded subarrays; optimized and BMI2-off/hint-disabled build passed",
+    "sanitizers": "ASan/UBSan passed with detect_leaks=0 locally due process-inspection restriction; both CI sanitizer jobs passed with detect_leaks=1",
+    "matrix_rejection": "Incomplete 450-row matrix is rejected",
+    "independent_artifact_check": "Both downloaded artifacts revalidated; recomputed paired summary CSVs match byte for byte"
+  }
+}

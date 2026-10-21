@@ -59,7 +59,7 @@ jobs:
             experiments/v23-scatter-prefetch-benchmark.cpp \
             /tmp/rune23-ext/build/libhwy_contrib.a \
             /tmp/rune23-ext/build/libhwy.a -latomic -o /tmp/v23-bench
-      - name: Qualify 1M and 4M five-seed held-out experiments
+      - name: Qualify 1M and 4M five-seed experiments
         run: |
           set -euo pipefail
           mkdir -p v23-results
