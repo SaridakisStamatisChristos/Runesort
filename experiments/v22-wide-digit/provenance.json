@@ -1,0 +1,67 @@
+{
+  "campaign": "rune-v22-wide-digit",
+  "benchmarked_commit": "c16ce4c431830f8fb8d90338d29c937974cad871",
+  "parent": "d172516a691d82914b432a8d22bbaef55d828f91",
+  "ci": {
+    "research": 39552710644,
+    "push": 39552710417,
+    "pr": 39552757767,
+    "x86_native_job": 119065315425,
+    "arm64_native_job": 119065315169
+  },
+  "cpu_evidence": {
+    "x86_64": [
+      "2026-10-21T05:59:46.0181120Z \u001b[36;1mg++ --version\u001b[0m",
+      "2026-10-21T05:59:46.0545428Z Architecture:                            x86_64",
+      "2026-10-21T05:59:46.0551111Z Model name:                              AMD EPYC 7763 64-Core Processor",
+      "2026-10-21T05:59:46.0624963Z g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "2026-10-21T05:59:46.0699031Z \u001b[36;1mg++ -std=c++17 -O3 -march=native -DNDEBUG -I. runesort_v22/test_wide_radix.cpp -o /tmp/v22-test\u001b[0m",
+      "2026-10-21T06:06:04.2944568Z \u001b[36;1mg++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \\\u001b[0m"
+    ],
+    "arm64": [
+      "2026-10-21T05:59:47.1115156Z \u001b[36;1mg++ --version\u001b[0m",
+      "2026-10-21T05:59:47.1366920Z Architecture:                            aarch64",
+      "2026-10-21T05:59:47.1372887Z Model name:                              Neoverse-N2",
+      "2026-10-21T05:59:47.1880197Z g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "2026-10-21T05:59:47.1966886Z \u001b[36;1mg++ -std=c++17 -O3 -march=native -DNDEBUG -I. runesort_v22/test_wide_radix.cpp -o /tmp/v22-test\u001b[0m",
+      "2026-10-21T06:03:39.3385612Z \u001b[36;1mg++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \\\u001b[0m"
+    ]
+  },
+  "flags": "g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "comparator_sha": {
+    "highway": "c3407ccaaecffa735c911cae3971efa02263211d",
+    "ips4o": "8d5a97bb4c4048a1eef18b537f191a31462b051a"
+  },
+  "seeds": [
+    20271021,
+    20271023,
+    20271027,
+    20271029,
+    20271031
+  ],
+  "modeNames": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "algorithms": [
+    "RUNE17_full",
+    "RUNE17_fixed8",
+    "RUNE22_radix11",
+    "RUNE22_radix16",
+    "VQSort",
+    "IPS4o_seq"
+  ],
+  "n": [
+    1000000,
+    4000000
+  ],
+  "warmup": 1,
+  "measured_trials": 3,
+  "raw_rows": 600,
+  "correct_rows": 600,
+  "paired_groups": 20,
+  "decision": "NO-GO general/SOTA; HOLD x86-specific follow-up"
+}
