@@ -1,0 +1,115 @@
+name: RUNE v24 X86 Dispatcher Qualification
+on:
+  push:
+    branches: [research/rune-v24-x86-dispatch-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record provenance
+        run: |
+          set -euo pipefail
+          mkdir -p v24-results
+          { uname -a; lscpu; g++ --version; git rev-parse HEAD; } | tee v24-results/provenance.txt
+      - name: Verify complete CMake/CTest and differential
+        run: |
+          set -euo pipefail
+          python3 experiments/v24-x86-dispatch/verify_inheritance.py
+          cmake -S . -B /tmp/rune-v24 -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/rune-v24 --parallel 2
+          ctest --test-dir /tmp/rune-v24 --output-on-failure
+          g++ -std=c++17 -O3 -march=native -DNDEBUG -I. runesort_v24/test_dispatch.cpp -o /tmp/v24-test
+          /tmp/v24-test
+      - name: Fetch immutable comparator sources
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune24-ext
+          cd /tmp/rune24-ext
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          test "$(git -C highway rev-parse HEAD)" = c3407ccaaecffa735c911cae3971efa02263211d
+          test "$(git -C ips4o rev-parse HEAD)" = 8d5a97bb4c4048a1eef18b537f191a31462b051a
+      - name: Build native pinned Highway comparator
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune24-ext/highway -B /tmp/rune24-ext/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune24-ext/build --target hwy_contrib --parallel 2
+      - name: Build exact same-array benchmark
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune24-ext/ips4o -I/tmp/rune24-ext/highway \
+            experiments/v24-x86-dispatch-benchmark.cpp \
+            /tmp/rune24-ext/build/libhwy_contrib.a \
+            /tmp/rune24-ext/build/libhwy.a -latomic -o /tmp/v24-bench
+      - name: Qualify four sizes and ten distributions with fresh seeds
+        run: |
+          set -euo pipefail
+          mkdir -p v24-results
+          /tmp/v24-bench 65536 | tee v24-results/64k.csv
+          /tmp/v24-bench 999999 | tee v24-results/below_gate.csv
+          /tmp/v24-bench 1000000 | tee v24-results/1m.csv
+          /tmp/v24-bench 4000000 | tee v24-results/4m.csv
+      - name: Validate full matrix and summarize paired seeds
+        run: |
+          set -euo pipefail
+          python3 experiments/v24-x86-dispatch/summarize.py --isa "$(uname -m)" \
+            --output v24-results/paired_summary.csv v24-results/64k.csv v24-results/below_gate.csv v24-results/1m.csv v24-results/4m.csv
+          cat v24-results/paired_summary.csv
+      - name: Retain raw outputs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: v24-raw-${{ matrix.runner }}
+          path: v24-results/
+          if-no-files-found: warn
+  sanitizer:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check exact semantics under ASan and UBSan
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined \
+            -I. runesort_v24/test_dispatch.cpp -o /tmp/v24-san
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v24-san
+      - name: Compile portable no-prefetch fallback
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -DRUNE23_DISABLE_PREFETCH -I. runesort_v24/test_dispatch.cpp -o /tmp/v24-no-prefetch
+          /tmp/v24-no-prefetch
+      - name: Explicit dispatcher-disable fallback
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -DRUNE24_DISABLE -I. runesort_v24/test_dispatch.cpp -o /tmp/v24-disabled
+          /tmp/v24-disabled
+      - name: x86 portable BMI2-off verification
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -mno-bmi2 -I. runesort_v24/test_dispatch.cpp -o /tmp/v24-no-bmi2
+          /tmp/v24-no-bmi2
