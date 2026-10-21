@@ -14,7 +14,7 @@ static void verify(const std::vector<U>& input,int route=-1){
   auto ref=input;std::sort(ref.begin(),ref.end());
   auto a=input,b=input,c=input,d=input;
   rune_v26::selected_route_calls=0;rune_v26::sort(a);
-  if(route>=0)require(rune_v26::selected_route_calls==std::size_t(route),"routing");
+  if(route>=0)require(rune_v26::selected_route_calls==std::size_t(route && rune_v25::simd_available()),"routing");
   rune_v26::ablation(b.data(),b.size());
   rune_v26::kernel<true>(c.data(),c.size());
   rune_v26::kernel<false>(d.data(),d.size());
@@ -63,7 +63,7 @@ int main(){
     for(auto&x:a)x=g();std::sort(a.begin(),a.begin()+64);verify(a,0);
     for(auto&x:a)x=g()&1;verify(a,0);
     for(std::size_t i=0;i<n;++i)a[i]=i;
-    for(unsigned i=0;i<64;++i)a[i]=g();verify(a,1);
+    for(unsigned i=0;i<64;++i)a[i]=g();verify(a,0);
   }
   // All keys share a high prefix; the exact varying-bit skip must not loop.
   for(unsigned width:{1u,4u,8u,16u,31u,60u}){

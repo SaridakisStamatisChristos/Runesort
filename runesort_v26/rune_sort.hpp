@@ -116,10 +116,23 @@ inline void selected_dispatch(uint64_t* a, size_t n) {
 // narrow domains and ordered prefixes never enter a duplicate full dispatcher.
 template<bool Network=true>
 inline void sort_with_leaf(std::uint64_t* a,std::size_t n){
-  if(n<1000000){rune_v17::sort(a,n);return;}
+  if(n<1000000 || !rune_v25::simd_available()){rune_v17::sort(a,n);return;}
   std::uint64_t mask=0;unsigned descents=0;
   for(unsigned i=1;i<64;++i){mask|=a[i]^a[0];descents+=a[i]<a[i-1];}
   if(descents<20 || legacy::popcount(mask)<60){rune_v17::sort(a,n);return;}
+  // A highly disordered first cache line can conceal an ordered bulk region.
+  // These are performance gates only: failures delegate to the exact v17 sorter.
+  for(const std::size_t begin : {n/2, n-64}){
+    std::uint64_t distant_mask=0;
+    unsigned distant_descents=0;
+    for(unsigned i=1;i<64;++i){
+      distant_mask|=a[begin+i]^a[begin];
+      distant_descents+=a[begin+i]<a[begin+i-1];
+    }
+    if(distant_descents<20 || legacy::popcount(distant_mask)<60){
+      rune_v17::sort(a,n);return;
+    }
+  }
   selected_dispatch<Network>(a,n);
 }
 inline void sort(std::uint64_t* a,std::size_t n){sort_with_leaf<true>(a,n);}

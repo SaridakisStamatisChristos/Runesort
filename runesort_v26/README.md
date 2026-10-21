@@ -9,7 +9,10 @@ keys with v25's tested AVX-512 bitonic networks when AVX512F+POPCNT is
 available, otherwise `std::sort`. The independent `std::sort` leaf
 ablation is `rune_v26::ablation`. The public v26 wrapper keeps v25's
 inherited exact v17 ordered/low-cardinality exits and sample-based
-high-entropy gate, but permits the scalar nibble worker on all CPUs.
+high-entropy gate, while restricting the public nibble worker to AVX512F+POPCNT CPUs. Two
+widely separated full-width entropy probes must also pass; rejected arrays
+follow the frozen v17 path. The low-level kernel remains portable and
+is tested on ARM and non-AVX x86 for correctness.
 
 Worst-case on fixed 64-bit unsigned keys: at most 16 nibble levels,
 O(16n) distribution work plus bounded-size leaf sorting; O(n) heap scratch
@@ -31,3 +34,19 @@ C++17; no global AVX-512 compilation flag is needed.
    distributions, changed gates or CPU-crossing performance claims.
 4. Do not merge this stacked PR without demonstrable, independently
    replicated bounded benefit and no material regressions.
+
+## Post-qualification policy revision (v26b)
+
+The first frozen source (`e65e3379b8c4041fa96759c3fdb1090bd11c8d47`)
+passed full cross-ISA correctness but **failed unconditional performance**.
+Its GitHub x86 runner lacked AVX-512; full-width 1M/4M uniform64 were about
+8%/11% slower than v17. ARM uniform64 1M was about 11% slower and
+entropy-prefix 1M/4M regressed roughly 29%/33%. These are paired-seed
+comparisons from the archived 2026-10-21 run, not a compiler error.
+
+This follow-up disables the unqualified scalar public dispatch and adds
+remote entropy checks to defend against a misleading first-64-key sample.
+It is a **new candidate policy**, not a retroactive change to the baseline
+measurement. The low-level scalar worker remains available for experimental
+testing. AVX-512 performance and superiority still need independent
+qualification. Do not merge without those results.
