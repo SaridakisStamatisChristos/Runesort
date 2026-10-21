@@ -1,0 +1,106 @@
+{
+  "benchmarked_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+  "execution_layer": "ChatGPT-native OmO fallback; no real OmO worker execution claimed",
+  "qualification_run": 39559531907,
+  "jobs": [
+    {
+      "id": 119087184378,
+      "name": "native (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559531907/job/119087184378"
+    },
+    {
+      "id": 119087184663,
+      "name": "native (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559531907/job/119087184663"
+    },
+    {
+      "id": 119087184756,
+      "name": "sanitizer (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559531907/job/119087184756"
+    },
+    {
+      "id": 119087184835,
+      "name": "sanitizer (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559531907/job/119087184835"
+    },
+    {
+      "id": 119087193145,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559534836/job/119087193145"
+    },
+    {
+      "id": 119087185056,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559532049/job/119087185056"
+    }
+  ],
+  "workflow_runs": [
+    {
+      "id": 39559534836,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "pull_request",
+      "head_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559534836"
+    },
+    {
+      "id": 39559532049,
+      "name": "Build and verify",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559532049"
+    },
+    {
+      "id": 39559531907,
+      "name": "RUNE v24 X86 Dispatcher Qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+      "html_url": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39559531907"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12327810061,
+      "name": "v24-raw-ubuntu-24.04-arm",
+      "digest": "sha256:6b8a4ccf22340d4f48d14e4e5bd2ef03d4b43e4c9349c9bf93fe53163b2aac32",
+      "size_in_bytes": 31415,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12327810061",
+      "head_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "id": 12326593966,
+      "name": "v24-raw-ubuntu-24.04",
+      "digest": "sha256:12f21fa943acf078f2ab6ec85ba3e78abdb8ab9ece4ac9db7f6488b3de48ee50",
+      "size_in_bytes": 32749,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12326593966",
+      "head_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f"
+    }
+  ],
+  "local_verification": {
+    "ctest": "29/29 passed",
+    "differential": "134 exact arrays plus 4 guarded subarrays; 5 selected x86 routes, 0 with dispatcher disabled",
+    "sanitizers": "ASan/UBSan passed locally with detect_leaks=0 due host restriction; both CI sanitizer jobs passed with detect_leaks=1",
+    "fallbacks": "Local dispatcher-disabled and combined hint-disabled/BMI2-off passed; CI checked separate hint-disabled and dispatcher-disabled on both ISAs plus x86 BMI2-off",
+    "inheritance": "Exactly one selected worker replacement; frozen v17/v22/v23 sources unchanged",
+    "audit_checks": "Synthetic full 1000-observation matrices accepted; missing/duplicate records rejected; all 78 regression guard cells evaluated and synthetic failed cell detected",
+    "artifact_integrity": "Both ZIP SHA256 digests verified; summaries independently recomputed byte-identically; all 160 summary rows also recalculated with a separate direct raw-trial calculation",
+    "pilot": "Separate seed907001; 4M local run archived as counterevidence; contended 1M pilot retained but excluded from latency conclusions"
+  }
+}

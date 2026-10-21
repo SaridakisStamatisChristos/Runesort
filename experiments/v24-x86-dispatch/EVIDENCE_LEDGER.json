@@ -1,0 +1,435 @@
+{
+  "experiment": "rune-v24-x86-dispatch",
+  "benchmarked_sha": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+  "benchmarked_tree": "8583fc14648945303d97809593437058fc51e668",
+  "parent_sha": "8d63bb31c2b1d33ef22a61289ba1bc3cf4431ce9",
+  "verdict": "HOLD / NO-GO broad x86 integration; conditional Intel target benefit only; no merge",
+  "evidence_state": "EMPIRICALLY_VALIDATED within disclosed correctness and timing scope, not formal proof",
+  "reproducibility_level": "Executed and reproduced in current audit workflow; not robust universal performance",
+  "novelty_state": "No novelty claim; no current-SOTA literature audit",
+  "qualification": {
+    "rows": 2000,
+    "measured_sorts": 6000,
+    "verified_warmups": 2000,
+    "seeds": [
+      20291001,
+      20291011,
+      20291021,
+      20291031,
+      20291041
+    ],
+    "pilot_seed": 907001,
+    "seed_policy": "Qualification inputs disjoint from local pilot and prior v23 seeds; no candidate adjustment after measurement"
+  },
+  "gate_status": {
+    "end_to_end_benefit": {
+      "passed": true,
+      "failed_cells": 0,
+      "checked_cells": 2
+    },
+    "hint_contribution": {
+      "passed": true,
+      "failed_cells": 0,
+      "checked_cells": 1
+    },
+    "regression_guard": {
+      "passed": false,
+      "failed_cells": 2,
+      "checked_cells": 78
+    },
+    "pinned_vqsort_superiority": {
+      "passed": false,
+      "failed_cells": 2,
+      "checked_cells": 2
+    }
+  },
+  "evidence_items": [
+    {
+      "evidence_id": "E1",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "CI_RESULTS.json",
+        "x86_64_64k.csv",
+        "x86_64_below_gate.csv",
+        "x86_64_1m.csv",
+        "x86_64_4m.csv",
+        "arm64_64k.csv",
+        "arm64_below_gate.csv",
+        "arm64_1m.csv",
+        "arm64_4m.csv"
+      ],
+      "supports": "Every tested result equals a full std::sort oracle; six CI jobs completed successfully",
+      "does_not_establish": "Universal proof, huge-allocation safety or performance eligibility",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "evidence_id": "E2",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "x86_64_paired_summary.csv",
+        "x86_64_provenance.txt",
+        "GATES.json"
+      ],
+      "supports": "Full-sort Intel uniform64 latency and seed-paired comparator results",
+      "does_not_establish": "Other CPUs, other distributions or a latest-version SOTA comparison",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "evidence_id": "E3",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "arm64_paired_summary.csv",
+        "arm64_provenance.txt",
+        "GATES.json"
+      ],
+      "supports": "All 40 measured ARM regression guard cells pass",
+      "does_not_establish": "All ARM hardware and future compiler performance",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "evidence_id": "E4",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "local_pilot_4m.csv",
+        "local_provenance.txt"
+      ],
+      "supports": "One-seed local AMD EPYC 9V74 candidate regression versus frozen v17",
+      "does_not_establish": "CPU-family-wide effect, full qualification or VQSort performance",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "evidence_id": "E5",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "../../runesort_v24/rune_sort.hpp",
+        "verify_inheritance.py",
+        "../../runesort_v17/rune_sort.hpp"
+      ],
+      "supports": "Only one inherited worker is changed; ARM and small-input wrappers select frozen v17",
+      "does_not_establish": "Equal generated code layout or equal latency on unchanged worker paths",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    },
+    {
+      "evidence_id": "E6",
+      "kind": "inspectable execution artifact or source",
+      "source": [
+        "CI_RESULTS.json",
+        "EVIDENCE_LEDGER.json"
+      ],
+      "supports": "Artifact digests, measured source identity and reproducible arithmetic",
+      "does_not_establish": "Independent third-party replication",
+      "independently_inspectable": true,
+      "currency": "v24 source commit 54ac7bf6e30224712e9008cd46ff173fff30974f"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "claim_text": "All tested outputs matched ascending uint64 oracle results.",
+      "normalized_proposition": "All tested outputs matched ascending uint64 oracle results.",
+      "claim_type": "empirical correctness",
+      "scope_conditions": "134 differential arrays/four guarded subarrays per v24 test invocation, plus 6000 measured qualification sorts and 2000 warmups",
+      "importance": "central",
+      "evidence_items": [
+        "E1"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "SUPPORTED",
+      "confidence_basis": "Exact vector comparisons, route assertions, native and sanitizer execution",
+      "limitations": [
+        "Finite tests are not formal proof; n>UINT32_MAX allocation not exercised"
+      ],
+      "required_action": "Retain regression tests and worker correctness argument"
+    },
+    {
+      "claim_id": "C2",
+      "claim_text": "Full prefetch128 beats frozen v17 on Intel uniform64 at 1M and 4M under the declared gate.",
+      "normalized_proposition": "Full prefetch128 beats frozen v17 on Intel uniform64 at 1M and 4M under the declared gate.",
+      "claim_type": "empirical performance",
+      "scope_conditions": "Intel Xeon Platinum 8573C, GCC13.3, five fresh seeds, three trials each",
+      "importance": "central",
+      "evidence_items": [
+        "E2"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "SUPPORTED",
+      "confidence_basis": "Paired ratios 0.723461055533296 and 0.39249137177202026, each 5/5 seed wins",
+      "limitations": [
+        "One virtualized qualification session; not a universal x86 claim"
+      ],
+      "required_action": "Retain as CPU-scoped research evidence"
+    },
+    {
+      "claim_id": "C3",
+      "claim_text": "The prefetch-enabled full dispatcher beats its distance-zero control at Intel 4M uniform64 under the declared gate.",
+      "normalized_proposition": "The prefetch-enabled full dispatcher beats its distance-zero control at Intel 4M uniform64 under the declared gate.",
+      "claim_type": "ablation performance",
+      "scope_conditions": "Same dispatcher, source inputs, compiler and host as C2",
+      "importance": "central",
+      "evidence_items": [
+        "E2"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "SUPPORTED",
+      "confidence_basis": "Paired ratio 0.39921618321240276, 5/5 wins",
+      "limitations": [
+        "Compiled-code/layout effects remain possible; no cache-counter attribution"
+      ],
+      "required_action": "Keep the ablation; use PMU evidence for a causal cache claim"
+    },
+    {
+      "claim_id": "C4",
+      "claim_text": "The candidate meets the <=5% latency regression guard in every non-target qualification cell.",
+      "normalized_proposition": "The candidate meets the <=5% latency regression guard in every non-target qualification cell.",
+      "claim_type": "nonregression",
+      "scope_conditions": "78 mode-size-ISA guard cells",
+      "importance": "central",
+      "evidence_items": [
+        "E2",
+        "E3"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [
+        "random32 1M: ratio 1.0553037936290581, 1/5 wins",
+        "sortedprefix 4M: ratio 1.0731925802959903, 1/5 wins"
+      ],
+      "status": "CONTRADICTED",
+      "confidence_basis": "Two Intel cells exceed the fixed threshold",
+      "limitations": [
+        "Small excesses can include timing noise, but were not waived or rerun"
+      ],
+      "required_action": "Do not promote; diagnose inactive-route regressions"
+    },
+    {
+      "claim_id": "C5",
+      "claim_text": "The ARM fallback meets every declared latency guard in this run.",
+      "normalized_proposition": "The ARM fallback meets every declared latency guard in this run.",
+      "claim_type": "nonregression",
+      "scope_conditions": "Neoverse-N2, all 40 workload-size cells",
+      "importance": "central",
+      "evidence_items": [
+        "E1",
+        "E3",
+        "E5"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "SUPPORTED",
+      "confidence_basis": "No selected new-worker routes; max paired ratio 1.0338974594666561",
+      "limitations": [
+        "Source-equivalent decisions do not prove exact timing equality"
+      ],
+      "required_action": "Preserve direct v17 fallback; broaden ARM evidence only if changing it"
+    },
+    {
+      "claim_id": "C6",
+      "claim_text": "The broad x86 policy is no slower than v17 on every tested x86 setup.",
+      "normalized_proposition": "The broad x86 policy is no slower than v17 on every tested x86 setup.",
+      "claim_type": "generalization",
+      "scope_conditions": "Intel qualification and separate local AMD EPYC 9V74 VM pilot",
+      "importance": "central",
+      "evidence_items": [
+        "E2",
+        "E4"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Local and CI hardware/configuration are different; each within-run comparison uses identical source arrays"
+      ],
+      "counterevidence": [
+        "Local AMD 4M candidate100.746151 ms versus v17 69.603615 ms"
+      ],
+      "status": "CONTRADICTED",
+      "confidence_basis": "AMD 4M pilot median ratio 1.4474269906814465 plus failed Intel guard cells",
+      "limitations": [
+        "AMD result is one exploratory seed; not a complete hardware-family qualification"
+      ],
+      "required_action": "Keep draft; evaluate a narrower opt-in or hardware-specific policy on fresh data"
+    },
+    {
+      "claim_id": "C7",
+      "claim_text": "The candidate establishes superiority over pinned VQSort on the target workload.",
+      "normalized_proposition": "The candidate establishes superiority over pinned VQSort on the target workload.",
+      "claim_type": "comparator performance",
+      "scope_conditions": "Intel uniform64, 1M and 4M",
+      "importance": "central",
+      "evidence_items": [
+        "E2"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [
+        "Both predeclared superiority checks fail"
+      ],
+      "status": "CONTRADICTED",
+      "confidence_basis": "Paired ratios 2.786723375437526 and 2.8388433579075203, 0/5 wins each",
+      "limitations": [
+        "Historical upstream revision; no latest-version comparison"
+      ],
+      "required_action": "Do not make a superiority or SOTA claim"
+    },
+    {
+      "claim_id": "C8",
+      "claim_text": "Prefetch reduces cache misses or read-for-ownership traffic.",
+      "normalized_proposition": "Prefetch reduces cache misses or read-for-ownership traffic.",
+      "claim_type": "causal mechanism",
+      "scope_conditions": "Intel ablation latency evidence only",
+      "importance": "central",
+      "evidence_items": [
+        "E2"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "NOT_VERIFIABLE",
+      "confidence_basis": "No PMU counters were collected",
+      "limitations": [
+        "Elapsed time cannot identify the hardware cause"
+      ],
+      "required_action": "Collect appropriate counters before making this causal claim"
+    },
+    {
+      "claim_id": "C9",
+      "claim_text": "The archived summaries and gates reproduce the retained raw observations.",
+      "normalized_proposition": "The archived summaries and gates reproduce the retained raw observations.",
+      "claim_type": "artifact integrity",
+      "scope_conditions": "Both CI artifacts and 160 summary rows",
+      "importance": "central",
+      "evidence_items": [
+        "E6"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "SUPPORTED",
+      "confidence_basis": "ZIP digests verified, summaries byte-identical, independent direct arithmetic check",
+      "limitations": [
+        "Same audit workflow, not independent research-group reproduction"
+      ],
+      "required_action": "Preserve source SHA, pins, raw trials and artifact hashes"
+    },
+    {
+      "claim_id": "C10",
+      "claim_text": "v24 establishes novel or current state-of-the-art sorting performance.",
+      "normalized_proposition": "v24 establishes novel or current state-of-the-art sorting performance.",
+      "claim_type": "novelty/SOTA",
+      "scope_conditions": "No such promotion claim made",
+      "importance": "central",
+      "evidence_items": [
+        "E2"
+      ],
+      "source_provenance": {
+        "commit": "54ac7bf6e30224712e9008cd46ff173fff30974f",
+        "qualification_run": 39559531907
+      },
+      "evidence_directness": "direct",
+      "assumptions": [
+        "Compiler and runtime execute the supplied source as recorded; timings reflect this run"
+      ],
+      "counterevidence": [],
+      "status": "NOT_VERIFIABLE",
+      "confidence_basis": "Conventional radix/prefetch design; no current prior-art coverage audit",
+      "limitations": [
+        "Pinned historical baselines are insufficient for SOTA; comparator superiority itself fails"
+      ],
+      "required_action": "Do not make a novelty, SOTA or paper-readiness claim"
+    }
+  ],
+  "source_sha256": {
+    "runesort_v24/rune_sort.hpp": "ac24d8fb810c0c3f4541d8b8493eb03fe904004d3494934a4d24720870dd9f72",
+    "runesort_v24/test_dispatch.cpp": "16de9b3fcc2b1641030ccde2afaf408531e43a55435b096a16e3d34eafc1521c",
+    "runesort_v24/CMakeLists.txt": "3645585234932fd9278cdbe86b8cdf54ab56c7014d3fe3ac52695776a16d626f",
+    "experiments/v24-x86-dispatch-benchmark.cpp": "a8870d3268a57287b2a365f98f972c8cb4a42c804f40db40443237b20e5924c9",
+    "experiments/v24-x86-dispatch/PLAN.md": "2a56343b13750c892cae8c6e5d2eb3bbacf8acbb6924d84247fe2ebde5376e49",
+    "experiments/v24-x86-dispatch/summarize.py": "760e293d0ff42a83d3f85a807dca85a2e6ef03a87356d3e1c5cbd36efdd26d05",
+    "experiments/v24-x86-dispatch/evaluate.py": "3ec4d0e9265b4c74df572853ed92d63d18f6f84cfdb58517e76c977622c193cc",
+    "experiments/v24-x86-dispatch/verify_inheritance.py": "69c0529f3b4108de0e12866cb2a5d48100dd9e73ead01ead3ad97f34a10cce09",
+    ".github/workflows/v24-x86-dispatch.yml": "fbc8e66f63d2928b8e0924a65a2d68deb30de2756998c131f5afe1f1e42cd026",
+    "CMakeLists.txt": "89c1a1d3d37ef7d9318b6919281c5fed5b9700e91360e99e2126c7ead0677156"
+  },
+  "archived_sha256": {
+    "CI_RESULTS.json": "cfe556c33ed77a88a5ee3cb3040e9a95511f05f3a2be8a5cc7a2f81d545f96cb",
+    "FINAL_VERDICT.md": "7328d8c6c1cd3651503d28adf197d889b3d8f37531e2de123f14ce13b75a2cfd",
+    "GATES.json": "01a273ce9b6071d29a87439093a8308aa4fcea56608982f066d68eb503bbfbd2",
+    "arm64_1m.csv": "cf2d7d68c6a972d6708bb4ea871b258acc68c3ef90228e374161def9243aaad7",
+    "arm64_4m.csv": "42867774859668704ad3b84ce13a58592b17fc13a6b5992e70feed18013f4cc9",
+    "arm64_64k.csv": "f83ce0d4795a7d444ce468f87ea0063b339303c51a940974253103f804e744f4",
+    "arm64_below_gate.csv": "240945b611911a6ee8af06b65cf15f63410a09e930c30e8c7bd642ab1d108d53",
+    "arm64_paired_summary.csv": "5e452f64d6ddf344930a398dd37f8d4103e7ec02bc40acb7376be2e79abb4a40",
+    "arm64_provenance.txt": "3b8cb81d6950be7cc32bd87041adc9700b7955fc501ba1849d1ef884de6e893e",
+    "local_pilot_1m_contended.csv": "876ffc975abf6d69e696e99871cb2057440c100dbe83ae2d23901a79dd018211",
+    "local_pilot_4m.csv": "4dc19167a49ce5fc5485f50d6911e1c772113c7cb269e8660549458e324d17be",
+    "local_provenance.txt": "0bf361871a0727acf6b256d602bb2645d9d6ca466e4e580aa6574deddb339beb",
+    "x86_64_1m.csv": "6e717f5a4b54da37db42a6bc222a3a574027b6cf0d7ffec318e38840b4701d9c",
+    "x86_64_4m.csv": "fbd89849870a47308ff2dd1551f9c9645bbf415a122c23516a450a4c496e969c",
+    "x86_64_64k.csv": "b08d864d98e8935bb5e355101b08ffc5b54f13574bce06e926d32680ecd288c6",
+    "x86_64_below_gate.csv": "6bfd39068ca35b3a1eb863a38f056cf284a0a046438f9606b2967d45c4e86061",
+    "x86_64_paired_summary.csv": "177b9ee360fa07c6f81d9e23149cebeeb3e85083eaaf291ad055528af01314fe",
+    "x86_64_provenance.txt": "d12db5744f1022bd523a2d9a1b7582e69516c53caf7bb6b25086826d1c2e00ca"
+  }
+}
