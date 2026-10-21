@@ -1,0 +1,55 @@
+{
+  "study": "RUNE v20",
+  "qualified_commit": "4ba2b0c338c794584f78d0f868e9bf5bee0d6b56",
+  "parent": "927d29b778b75f67e8a908cffa914a5f6e88929f",
+  "dedicated_workflow_run": 39519319443,
+  "push_workflow_run": 39519319385,
+  "pr_workflow_run": 39519365351,
+  "pinned_highway": "c3407ccaaecffa735c911cae3971efa02263211d",
+  "pinned_ips4o": "8d5a97bb4c4048a1eef18b537f191a31462b051a",
+  "compiler_flags": "-std=c++20 -O3 -march=native -DNDEBUG -pthread",
+  "runner": "Ubuntu 24.04 GitHub-hosted x86_64 / arm64 virtualized",
+  "observed_cpu_lines": {
+    "x86_64": [
+      "2026-10-21T00:07:03.9157194Z Architecture:                            x86_64",
+      "2026-10-21T00:07:03.9164720Z Model name:                              AMD EPYC 7763 64-Core Processor",
+      "2026-10-21T00:07:03.9166237Z Model:                                   1"
+    ],
+    "arm64": [
+      "2026-10-21T00:07:06.2070468Z Architecture:                            aarch64",
+      "2026-10-21T00:07:06.2075686Z Model name:                              Neoverse-N2",
+      "2026-10-21T00:07:06.2076485Z Model:                                   0"
+    ]
+  },
+  "sort_rows": 500,
+  "correct_sort_rows": 500,
+  "phase_rows": 336,
+  "correct_phase_rows": 336,
+  "seed_ids": [
+    20261121,
+    20261127,
+    20261129,
+    20261147,
+    20261153
+  ],
+  "phase_seeds": [
+    20261121,
+    20261127,
+    20261129
+  ],
+  "sort_warmups": 1,
+  "sort_trial_reps": 3,
+  "n": [
+    1000000,
+    4000000
+  ],
+  "modes": [
+    "uniform64",
+    "random32",
+    "K85000",
+    "sorted",
+    "alternating"
+  ],
+  "release_verdict": "Research only, no merge; x86 uniform64 worker bottleneck",
+  "profiler_method": "in-loop steady_clock instrumentation; no hardware PMC"
+}
