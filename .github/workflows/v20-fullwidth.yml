@@ -1,0 +1,97 @@
+name: RUNE v20 Full-width Baseline and Phase Investigation
+on:
+  push:
+    branches: [research/rune-v20-fullwidth-diagnostic-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baseline:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record machine and compiler
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          g++ --version
+          git rev-parse HEAD
+      - name: Fetch pinned original VQSort and IPS4o sources
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune20-ext
+          cd /tmp/rune20-ext
+          git init highway
+          git -C highway remote add origin https://github.com/google/highway.git
+          git -C highway fetch --depth=1 origin c3407ccaaecffa735c911cae3971efa02263211d
+          git -C highway checkout --detach FETCH_HEAD
+          git init ips4o
+          git -C ips4o remote add origin https://github.com/SaschaWitt/ips4o.git
+          git -C ips4o fetch --depth=1 origin 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          git -C ips4o checkout --detach FETCH_HEAD
+          test "$(git -C highway rev-parse HEAD)" = c3407ccaaecffa735c911cae3971efa02263211d
+          test "$(git -C ips4o rev-parse HEAD)" = 8d5a97bb4c4048a1eef18b537f191a31462b051a
+      - name: Compile VQSort native Highway libraries
+        run: |
+          set -euo pipefail
+          cmake -S /tmp/rune20-ext/highway -B /tmp/rune20-ext/build \
+            -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF \
+            -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune20-ext/build --target hwy_contrib --parallel 2
+      - name: Build isolated benchmarks against exact pinned implementations
+        run: |
+          set -euo pipefail
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread \
+            -I. -I/tmp/rune20-ext/ips4o -I/tmp/rune20-ext/highway \
+            experiments/v20-fullwidth-competition.cpp \
+            /tmp/rune20-ext/build/libhwy_contrib.a \
+            /tmp/rune20-ext/build/libhwy.a -latomic -o /tmp/v20-comp
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -I. \
+            experiments/v20-radix-phases.cpp -o /tmp/v20-phase
+      - name: Execute full output-verified paired comparisons
+        run: |
+          set -euo pipefail
+          mkdir -p v20-raw
+          /tmp/v20-comp 1000000 | tee v20-raw/competition_1m.csv
+          /tmp/v20-comp 4000000 | tee v20-raw/competition_4m.csv
+      - name: Execute instrumented phase attribution
+        run: |
+          set -euo pipefail
+          /tmp/v20-phase 1000000 | tee v20-raw/phases_1m.csv
+          /tmp/v20-phase 4000000 | tee v20-raw/phases_4m.csv
+      - name: Archive raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v20-evidence-${{ matrix.runner }}
+          path: v20-raw/*.csv
+          if-no-files-found: warn
+  baseline-sanitizers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Reverify frozen v17 radix and phase instrumentation under sanitizers
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer \
+            -fsanitize=address,undefined -I. -Irunesort_v17 \
+            runesort_v17/test_radix_scratch.cpp -o /tmp/v20-san
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v20-san
+          g++ -std=c++17 -O1 -g -fno-omit-frame-pointer \
+            -fsanitize=address,undefined -I. \
+            experiments/v20-radix-phases.cpp -o /tmp/v20-phase-san
+          ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 \
+            UBSAN_OPTIONS=halt_on_error=1 /tmp/v20-phase-san 100000 > /tmp/v20-phase-sanitizer.csv
