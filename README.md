@@ -48,6 +48,22 @@ VQSort, numpy/x86-simd-sort, IPS4o, CAFS, Boost pdqsort/spreadsort and std::sort
 It retains all 33 workloads at 100K, 1M and 4M keys, five seeds, five chronological
 trials and a checked warmup. Every output is compared exactly with std::sort.
 
+The frozen qualification passed all 198 regression guards and all four target
+benefit gates. It recorded 10,890 exact-oracle observations, 54,450 timed sorts
+and 10,890 verified warmups. Native x86/ARM correctness and leak-enabled
+ASan/UBSan jobs all passed. In 24 defined CPU/workload/size cells, RUNE beat
+every compared public sorter by the fixed margin with five of five seed wins.
+
+Example: native Intel Xeon Platinum 8573C, four million sparse-domain keys.
+These are medians in milliseconds from one host; gate ratios are seed-paired.
+
+| Domain | RUNE v27 | RUNE v17 | VQSort | x86-simd-sort |
+|---|---:|---:|---:|---:|
+| 17 varying bits | 11.37 | 78.35 | 36.66 | 36.47 |
+| 20 varying bits | 17.56 | 102.45 | 35.74 | 36.53 |
+
+[Full source-specific verdict and raw evidence](https://github.com/SaridakisStamatisChristos/Runesort/blob/1bb9b40849d0ad5157a6843ed20e15784975208d/experiments/v27-adaptive-msd/FINAL_VERDICT.md).
+
 Performance depends on CPU, input domain and size. Compact-domain gains do not
 establish unrestricted random64 leadership or universal SOTA. Counting sort,
 bit extraction and SIMD reconstruction are established techniques; no algorithmic

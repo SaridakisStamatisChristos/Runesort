@@ -69,6 +69,12 @@ int main() {
       check(a,route);
     }
   }
+  // Sparse domains including bit 63 must preserve unsigned numeric order.
+  for(unsigned bits:{12u,17u,20u}) for(unsigned offset:{0u,1u,63u}) {
+    const U m=mask(bits,offset),constant=g()&~m;
+    std::vector<U>a(600001);for(auto&x:a)x=constant|(g()&m);
+    check(a,rune_v27::detail::bmi2_available()?1:0);
+  }
   // False sample: extra bits appear only outside all three inspected windows.
   for(std::size_t outlier:{64u,4095u,4096u,123456u,599900u}) {
     std::vector<U>a(600001);for(auto&x:a)x=g()&0xffff;

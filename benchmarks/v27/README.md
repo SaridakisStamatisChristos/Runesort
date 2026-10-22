@@ -27,3 +27,20 @@ The script verifies every expected workload, size, seed, comparator, oracle flag
 trial and median; it reproduces all six summaries byte for byte before computing
 regression, benefit and tightly scoped comparative-winning gates. Performance
 gates remain distinct from correctness CI. Broad random64 SOTA is not claimed.
+
+## Qualified result
+
+All eight research qualification jobs passed for the pinned source, including
+34 CTest checks per architecture and three leak-enabled sanitizer configurations.
+All 198 regression guards and four primary benefit gates passed. Strict comparative
+leadership was observed in 24 specified cells; `ASSESSMENT.json` records every
+one and the raw data hashes. The earlier scalar AMD revision also passed its
+independent regression and benefit gates; no absolute host times are pooled.
+
+[Immutable verdict and complete raw CSV archive](https://github.com/SaridakisStamatisChristos/Runesort/blob/1bb9b40849d0ad5157a6843ed20e15784975208d/experiments/v27-adaptive-msd/FINAL_VERDICT.md).
+
+The 4M random64 result remains materially behind VQSort (280.64 vs 35.45 ms on
+the recorded Intel host). This integration improves compact domains and retains
+the old general fallback. It does not resolve that separate high-entropy gap.
+The research archive preserves the initial failed target, earlier assessments,
+development pilots and an excluded incomplete noisy local attempt.
