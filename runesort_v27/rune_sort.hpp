@@ -60,6 +60,14 @@ inline bool compact_count(U* a, std::size_t n) {
   }
   const unsigned sampled_bits=rune_v17::detail::popcount(sampled);
   if (sampled_bits<12 || sampled_bits>20) return false;
+  if ((std::size_t(1)<<(sampled_bits-1))>n) return false;
+  // Without fast extraction, a sparse sample is already enough to select the
+  // exact fallback. It need not prove the full domain is sparse: declining a
+  // potentially profitable attempt changes performance only, never semantics.
+  if (!bmi2_available()) {
+    const unsigned sampled_shift=rune_v17::detail::ctz(sampled);
+    if ((sampled>>sampled_shift)!=((U(1)<<sampled_bits)-1)) return false;
+  }
   // Early rejection is read-only; no partially reconstructed array can escape.
   U variable=sampled;
   for (std::size_t begin=0; begin<n;) {
