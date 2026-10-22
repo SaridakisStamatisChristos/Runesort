@@ -132,7 +132,7 @@ int main(int argc,char**argv){
   const int reps=argc>3?std::stoi(argv[3]):5;
   const int seeds=argc>4?std::stoi(argv[4]):5;
   if(n<2||reps!=5||seeds!=5)throw std::invalid_argument("requires n>=2, reps=5, seeds=5");
-  const std::array<U,5> fixed_seeds={704003,704009,704017,704023,704029};
+  const std::array<U,5> fixed_seeds={708003,708007,708011,708017,708023};
   auto algos=implementations();
   const auto cases=modes(group);
   std::cout<<"group,workload,n,seed,algorithm,median_ms,min_ms,max_ms,repetitions,correct,trial0_ms,trial1_ms,trial2_ms,trial3_ms,trial4_ms,simd_available,bmi2_available,compact_selected\n";

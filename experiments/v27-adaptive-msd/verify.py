@@ -7,7 +7,7 @@ MODES={
  'entropy':['uniform64','random32','random16','extremes','sparse16','sparse16alt','contig16','split16','sparse17','sparse20','sparse23','sparse24'],
  'cardinality':['K16','K128','K1024','K4096','K8192','K16384','K32768','K40960','K65536','K73728','K81920','K131072'],
  'ordered':['sorted','reversed','rotated','nearly','local','equal','organpipe','sawtooth','alternating']}
-SEEDS=[704003,704009,704017,704023,704029]
+SEEDS=[708003,708007,708011,708017,708023]
 BASE=['RUNE_v27','RUNE_v17','RUNE_v24','RUNE_v26b','RUNE27_byte128_WORKER','VQSort','IPS4o_seq','pdqsort','spreadsort','std_sort']
 def verify(path,group,n,isa):
     rows=list(csv.DictReader(Path(path).open(newline='')))

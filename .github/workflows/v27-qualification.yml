@@ -22,7 +22,7 @@ jobs:
       - name: ASan UBSan including disabled ISA paths
         run: |
           set -euo pipefail
-          for flags in '' '-DRUNE27_DISABLE_BMI2 -DRUNE25_DISABLE_SIMD'; do
+          for flags in '' '-DRUNE27_DISABLE_SIMD' '-DRUNE27_DISABLE_BMI2 -DRUNE27_DISABLE_SIMD -DRUNE25_DISABLE_SIMD'; do
             g++ -std=c++17 -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer $flags -I. runesort_v27/test_domain.cpp -o /tmp/v27-san
             ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v27-san
           done

@@ -17,7 +17,9 @@ Domains of 12–20 varying bits use a `uint32_t` histogram, bounded to 4 MiB and
 no more than two bins per input key. Contiguous masks use shifts on all
 architectures; sparse masks require runtime-detected BMI2. All other inputs
 use the unchanged v17 public sorter. `RUNE27_DISABLE_BMI2` exercises the portable
-fallback. Unsupported sparse samples and oversized sampled tables reject before
+fallback. Runtime-gated AVX-512 reconstruction accelerates sparse tables with
+average multiplicity <=8; other tables retain ordinary fill.
+`RUNE27_DISABLE_SIMD` ablates this backend. Unsupported sparse samples and oversized sampled tables reject before
 the full scan. No AVX-512 or BMI2 is required to compile the public header.
 
 The sample cannot establish a domain restriction. A hidden outlier outside

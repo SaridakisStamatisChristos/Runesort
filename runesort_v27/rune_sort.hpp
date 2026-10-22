@@ -33,11 +33,47 @@ inline void contiguous_count(U* a, std::size_t n, U mask, unsigned shift,
   }
 }
 #if RUNE27_BMI2
+inline bool simd_reconstruct_available() {
+#ifndef RUNE27_DISABLE_SIMD
+  return __builtin_cpu_supports("avx512f") && bmi2_available();
+#else
+  return false;
+#endif
+}
+// Sparse frequency tables benefit from enumerating occupied bins with a SIMD
+// mask, then writing 1..8 copies without a data-dependent scalar fill loop.
+__attribute__((target("avx512f,bmi2")))
+inline void reconstruct_simd(U* a, const std::vector<std::uint32_t>& counts,
+                             U mask, U constant) {
+  std::size_t out=0;
+  // All accepted table sizes are powers of two >= 4096: no partial table load.
+  for (std::size_t b=0; b<counts.size(); b+=16) {
+    const auto values=_mm512_loadu_si512(counts.data()+b);
+    unsigned live=_mm512_cmpneq_epi32_mask(values,_mm512_setzero_si512());
+    while (live) {
+      const unsigned j=__builtin_ctz(live);
+      live&=live-1;
+      std::size_t copies=counts[b+j]; // strictly positive by the live mask
+      const U key=constant|_pdep_u64(b+j,mask);
+      const auto value=_mm512_set1_epi64(static_cast<long long>(key));
+      while (copies>8) {
+        _mm512_storeu_si512(a+out,value);out+=8;copies-=8;
+      }
+      // copies in [1,8]; inactive lanes must not touch the output boundary.
+      _mm512_mask_storeu_epi64(a+out,static_cast<__mmask8>((1u<<copies)-1),value);
+      out+=copies;
+    }
+  }
+}
 __attribute__((target("bmi2")))
 inline void extracted_count(U* a, std::size_t n, U mask, std::size_t bins) {
   std::vector<std::uint32_t> counts(bins, 0);
   for (std::size_t i=0; i<n; ++i) ++counts[_pext_u64(a[i],mask)];
   const U constant = a[0]&~mask;
+  // High average multiplicity favors the ordinary compiler-vectorized fill.
+  if (n<=bins*8 && simd_reconstruct_available()) {
+    reconstruct_simd(a,counts,mask,constant);return;
+  }
   std::size_t out=0;
   for (std::size_t b=0; b<bins; ++b) {
     const std::size_t count=counts[b];

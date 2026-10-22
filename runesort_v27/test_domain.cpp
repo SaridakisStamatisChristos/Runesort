@@ -89,12 +89,22 @@ int main() {
   for(std::size_t n:{1u,31u,32u,33u,127u,128u,129u,65535u,65536u,65537u}) {
     for(bool left:{false,true}) {
       U* p=left?reinterpret_cast<U*>(usable):reinterpret_cast<U*>(usable+bytes)-n;
-      for(std::size_t i=0;i<n;++i)p[i]=g()&0xffff;
+      for(std::size_t i=0;i<n;++i)p[i]=(g()&mask(17))|(~mask(17)&0xf0f0f0f0f0f0f0f0ULL);
       std::vector<U>oracle(p,p+n);std::sort(oracle.begin(),oracle.end());
       rune_v27::sort(p,n);
       require(std::equal(oracle.begin(),oracle.end(),p),"protected public boundary");++guards;
     }
   }
+#if RUNE27_BMI2
+  if(rune_v27::detail::simd_reconstruct_available()) {
+    for(std::size_t n=1;n<=129;++n) {
+      auto* p=reinterpret_cast<U*>(usable+bytes)-n;
+      std::vector<std::uint32_t> counts(16,0);counts[15]=std::uint32_t(n);
+      rune_v27::detail::reconstruct_simd(p,counts,15,UINT64_MAX&~U(15));
+      require(std::all_of(p,p+n,[](U x){return x==UINT64_MAX;}),"masked reconstruction tail");++guards;
+    }
+  }
+#endif
   require(munmap(memory,bytes+2*page)==0,"munmap");
 #endif
   std::printf("v27 OK: bmi2=%d, simd=%d, %u exact arrays, %u protected boundaries\n",

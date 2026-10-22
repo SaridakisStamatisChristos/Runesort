@@ -21,7 +21,7 @@ A worker win cannot satisfy this gate. A universal SOTA verdict is not inferred
 from a finite input matrix. No arbitrary comparator delegation is added to RUNE.
 
 Matrix: retain the complete 33-mode PR #30 generator and the three sizes 100K,
-1M, 4M. Five newly specified seeds [704003,704009,704017,704023,704029], plus
+1M, 4M. Five newly specified seeds [708003,708007,708011,708017,708023], plus
 the existing mode-index offset 131071. These seeds are frozen before the first
 v27 qualification run and differ from prior gauntlet seeds. One exact checked
 warmup plus five chronological raw timed trials; deterministic shuffled
@@ -59,3 +59,17 @@ streaming-store variants) were highly variable, some concurrent with builds.
 They are not qualification evidence and selected no production worker. Their
 negative direction motivates preserving v17 as fallback and qualifying the
 compact-domain change separately. CI must prove its own full exact source.
+
+## v27c reconstruction follow-up, frozen before its first CI run
+
+The first two source revisions retain their original seeds and results in Git
+and Actions. They do not qualify this revision. A separate local mechanism
+pilot (seed 707601, two sizes, three bit domains, five alternating-order
+measurements) identified sparse-table reconstruction as avoidable overhead.
+AVX-512 enumerates nonzero 16-counter blocks and writes up to eight duplicates
+with masked stores. Average multiplicity >8 retains scalar/compiler-vectorized
+fill. Contiguous paths, domain limits, benefit and regression thresholds, sizes,
+workloads and competitors are unchanged. All five seeds above are fresh for
+v27c; the pilot and earlier v27 measurements are development data. Require new
+source-specific correctness, ISA-disabled, sanitizer and full matrix results.
+`RUNE27_DISABLE_SIMD` preserves BMI2 counting while ablating reconstruction.
