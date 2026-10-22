@@ -1,0 +1,13 @@
+{
+  "repository": "SaridakisStamatisChristos/Runesort",
+  "research_source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6",
+  "qualification_run": "https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39866998932",
+  "headers": {
+    "runesort_v17/rune_sort.hpp": "a33717a794f4faa1981ad6c4d863f7bf81f3bf4152980f5b84cca5c7422c57b3",
+    "runesort_v22/wide_radix.hpp": "7e4387f035ecacf47c8d89f359e48a1c1c7876ddaec844e3648087fe3eff8448",
+    "runesort_v27/rune_sort.hpp": "722421f8559e05d44bd920d10d1e27de2369f0a8d8985602ea71695158e35b4f"
+  },
+  "integration": "Verbatim sorting headers; using-declaration exposes rune_v27::sort as runesort::sort without a wrapper call.",
+  "evidence_archive": "1bb9b40849d0ad5157a6843ed20e15784975208d",
+  "research_pr": "https://github.com/SaridakisStamatisChristos/Runesort/pull/31"
+}

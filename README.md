@@ -1,51 +1,100 @@
 # RUNE Sort
 
-**RUNE Sort v5** is an experimental, adaptive sorter for ascending `uint64_t` arrays in C++17. It combines range/bit-domain specializations, bounded exact frequency reconstruction, ordered-run handling and an exact fallback.
-
-> **Research status:** Tested prototype. Neither global state-of-the-art performance nor algorithmic novelty has been established. Direct CAFS, Google Highway VQSort and IPS4o comparisons remain outstanding.
+Adaptive, single-threaded ascending `uint64_t` sorting in C++17. The current
+API combines exact compact-domain counting with the v17 general sorter.
+The legacy v5 API remains available for compatibility.
 
 ## Quick start
 
 ```cpp
-#include "runesort_v5/rune_sort.hpp"
+#include <runesort/rune_sort.hpp>
 #include <cstdint>
 #include <vector>
 int main() {
     std::vector<std::uint64_t> values{9, 2, 7, 2, 5};
-    rune::sort(values);
+    runesort::sort(values);
+    // Also: runesort::sort(values.data(), values.size());
 }
 ```
 
+Add this repository's `include/` directory to the include path. CMake consumers
+can link the interface target `runesort::current` after `add_subdirectory`.
+
 ```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DRUNE_WITH_BOOST_BENCHMARK=OFF
 cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-## Repository contents
+## Current implementation
 
-- [Algorithm header](runesort_v5/rune_sort.hpp) — v5 implementation.
-- [Tests](runesort_v5/) — differential, adversarial, and dispatch checks.
-- [Technical evidence](runesort_v5/DESIGN_AND_EVIDENCE.md) — correctness arguments, limitations, and rejected hypotheses.
-- [Independent comparison report](benchmarks/competition_2026-10-20/RUN_REPORT.md) — measured 100K/1M/4M comparisons with C++ `std::sort`, Boost `pdqsort`, Boost `spreadsort`, and frozen RUNE v4.
-- [Raw measurements](benchmarks/competition_2026-10-20/summary_multisize.csv).
+Disordered domains with 12–20 varying bits can use a certified frequency table
+bounded to 4 MiB. Contiguous domains work portably; sparse domains use
+runtime-detected BMI2. Sparse low-multiplicity tables can reconstruct with
+runtime-detected AVX-512 masked stores. Other inputs use the unchanged v17
+sorter and its exact ordered, range, cardinality and radix paths. The build
+does not require either ISA. Unsupported hardware uses portable fallbacks.
 
-## Scope and reproducibility
+A sample chooses an attempt; a full-array mask certifies every key before
+reconstruction. Counter bounds, hidden outliers, disabled ISA paths and
+protected output boundaries are covered by differential tests and sanitizers.
+The sorting headers are imported verbatim from the measured research source;
+see [source provenance](benchmarks/v27/SOURCE_PROVENANCE.json).
 
-Input: unsigned 64-bit integers, ascending order; **not stable**. This API does not promise sorting of arbitrary records or signed floating-point values. Run local correctness tests before citing benchmark results; recorded timings are environment-dependent and do not establish universal superiority.
+## Performance and evidence
+
+Qualification compares complete public sort calls against pinned Highway
+VQSort, numpy/x86-simd-sort, IPS4o, CAFS, Boost pdqsort/spreadsort and std::sort.
+It retains all 33 workloads at 100K, 1M and 4M keys, five seeds, five chronological
+trials and a checked warmup. Every output is compared exactly with std::sort.
+
+The frozen qualification passed all 198 regression guards and all four target
+benefit gates. It recorded 10,890 exact-oracle observations, 54,450 timed sorts
+and 10,890 verified warmups. Native x86/ARM correctness and leak-enabled
+ASan/UBSan jobs all passed. In 24 defined CPU/workload/size cells, RUNE beat
+every compared public sorter by the fixed margin with five of five seed wins.
+
+Example: native Intel Xeon Platinum 8573C, four million sparse-domain keys.
+These are medians in milliseconds from one host; gate ratios are seed-paired.
+
+| Domain | RUNE v27 | RUNE v17 | VQSort | x86-simd-sort |
+|---|---:|---:|---:|---:|
+| 17 varying bits | 11.37 | 78.35 | 36.66 | 36.47 |
+| 20 varying bits | 17.56 | 102.45 | 35.74 | 36.53 |
+
+[Full source-specific verdict and raw evidence](https://github.com/SaridakisStamatisChristos/Runesort/blob/1bb9b40849d0ad5157a6843ed20e15784975208d/experiments/v27-adaptive-msd/FINAL_VERDICT.md).
+
+Performance depends on CPU, input domain and size. Compact-domain gains do not
+establish unrestricted random64 leadership or universal SOTA. Counting sort,
+bit extraction and SIMD reconstruction are established techniques; no algorithmic
+novelty claim is made. Read the [evidence guide](benchmarks/v27/README.md) for
+source-specific results, limits and reproduction.
+
+## API contract
+
+Input is a valid writable array of unsigned 64-bit integers; `nullptr, 0` is
+accepted. Output is ascending and preserves the multiset. This is not a stable
+record sort and does not accept arbitrary comparators, signed integers or
+floating-point inputs. Allocation failures may throw; the counting path allocates
+before reconstruction. It uses O(n + 2^b) time for certified b<=20 domains, and
+the fallback retains O(n log n) worst-case time and O(n) auxiliary memory.
+
+`RUNE27_DISABLE_BMI2` disables sparse counting; `RUNE27_DISABLE_SIMD` preserves
+BMI2 counting while disabling SIMD reconstruction. The legacy interface is
+`#include "runesort_v5/rune_sort.hpp"` with `rune::sort`.
 
 ## License
 
-**Proprietary — All Rights Reserved.** Copyright © 2026 Stamatis-Christos Saridakis. Source visibility does not grant rights to use, copy, modify, or distribute the code. See [LICENSE](LICENSE) for the full terms. Third-party dependencies remain governed by their own licenses.
+**Proprietary — All Rights Reserved.** Copyright © 2026 Stamatis-Christos
+Saridakis. Source visibility does not grant rights to use, copy, modify or
+distribute the code. See [LICENSE](LICENSE). External benchmark implementations
+retain their upstream licenses and are not bundled into the sorting API.
 
-## Independent sorting competition — 20 October 2026
+## Research history
 
-[Read the direct comparison report](experiments/direct-sota-evidence/REPORT.md) and [inspect the two-runner summary CSV](experiments/direct-sota-evidence/summary_two_runners.csv).
+- [Current qualification and reproducible harness — PR #31](https://github.com/SaridakisStamatisChristos/Runesort/pull/31)
+- [Prior 33-workload historical competition — PR #30](https://github.com/SaridakisStamatisChristos/Runesort/pull/30)
+- [Archived v5 independent comparison](experiments/direct-sota-evidence/REPORT.md)
 
-The pinned external-source benchmark compares RUNE v5 against CAFS (with pdqsort fallback), Highway VQSort, sequential IPS4o, Boost pdqsort/spreadsort, and C++ std::sort. All compared results passed exact-output checks against a reference sort. On the AMD EPYC 7763 GitHub runner, RUNE was fastest on **9 of 12** one-million-key workloads, with VQSort winning the other three. A separate six-sorter run on EPYC 9V74 showed CAFS outperforming RUNE on some cardinalities. These are CPU- and input-dependent results, **not proof of overall SOTA status**.
-
-- [Seven-algorithm GitHub Actions run](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39342894032)
-- [Six-algorithm GitHub Actions run](https://github.com/SaridakisStamatisChristos/Runesort/actions/runs/39343309296)
-- [Reproduction harness](experiments/direct-competition.cpp)
-
-The existing [proprietary license](LICENSE) applies to the original RUNE source; external comparator implementations retain their respective upstream licenses and are downloaded during benchmark execution, not incorporated into the repository.
+Historical research branches and negative results remain intact. A separately
+measured byte-MSD worker is experimental and is not part of this public API.

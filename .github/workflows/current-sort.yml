@@ -1,0 +1,30 @@
+name: Current sorter correctness
+on:
+  push:
+    branches: [main, feat/rune-current-v27-20261023]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  correctness:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build and run public API and legacy checks
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DRUNE_WITH_BOOST_BENCHMARK=OFF
+          cmake --build build --parallel 2
+          ctest --test-dir build --output-on-failure
+      - name: Public API ASan UBSan with runtime backends and forced fallback
+        run: |
+          set -euo pipefail
+          for flags in '' '-DRUNE27_DISABLE_SIMD' '-DRUNE27_DISABLE_BMI2 -DRUNE27_DISABLE_SIMD'; do
+            g++ -std=c++17 -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer $flags -Iinclude tests/test_current.cpp -o /tmp/test-current-san
+            ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/test-current-san
+          done
