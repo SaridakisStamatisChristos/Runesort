@@ -12,3 +12,5 @@ add_subdirectory(runesort_v23)
 add_subdirectory(runesort_v24)
 add_subdirectory(runesort_v25)
 add_subdirectory(runesort_v26)
+
+add_subdirectory(runesort_v27)
