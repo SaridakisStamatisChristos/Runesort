@@ -1,0 +1,89 @@
+name: RUNE v27 exact-domain qualification
+on:
+  push:
+    branches: [research/rune-v27-adaptive-msd-20261023]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  correctness:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DRUNE_WITH_BOOST_BENCHMARK=OFF
+          cmake --build build --parallel 2
+          ctest --test-dir build --output-on-failure
+      - name: ASan UBSan including disabled ISA paths
+        run: |
+          set -euo pipefail
+          for flags in '' '-DRUNE27_DISABLE_SIMD' '-DRUNE27_DISABLE_BMI2 -DRUNE27_DISABLE_SIMD -DRUNE25_DISABLE_SIMD'; do
+            g++ -std=c++17 -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer $flags -I. runesort_v27/test_domain.cpp -o /tmp/v27-san
+            ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/v27-san
+          done
+  competition:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        group: [entropy, cardinality, ordered]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    env:
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Record source, host and compiler
+        run: |
+          set -euo pipefail
+          mkdir -p v27-data
+          { uname -a; lscpu; g++ --version; git rev-parse HEAD; echo 'FLAGS -std=c++20 -O3 -march=native -DNDEBUG -pthread; no OpenMP'; } > v27-data/provenance.txt
+      - name: Install baseline headers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libboost-dev
+          dpkg-query -W libboost-dev >> v27-data/provenance.txt
+      - name: Fetch pinned comparators
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rune-v27
+          fetch() {
+            git init "/tmp/rune-v27/$1"
+            git -C "/tmp/rune-v27/$1" remote add origin "$2"
+            git -C "/tmp/rune-v27/$1" fetch --depth=1 origin "$3"
+            git -C "/tmp/rune-v27/$1" checkout --detach FETCH_HEAD
+            test "$(git -C "/tmp/rune-v27/$1" rev-parse HEAD)" = "$3"
+            echo "$1 $3" >> v27-data/provenance.txt
+          }
+          fetch highway https://github.com/google/highway.git 8fd66948f4555b022328b42120dbce9315847493
+          fetch ips4o https://github.com/SaschaWitt/ips4o.git 8d5a97bb4c4048a1eef18b537f191a31462b051a
+          fetch cafs https://github.com/kexibq-official/cafs-lib.git 13488afef446ae88e7ad631ec6f862def896094a
+          fetch xss https://github.com/numpy/x86-simd-sort.git 6e059b14975df2e3c74260ec905167a1be5a34ca
+      - name: Build VQSort
+        run: |
+          cmake -S /tmp/rune-v27/highway -B /tmp/rune-v27/hwy-build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF -DHWY_ENABLE_INSTALL=OFF -DHWY_ENABLE_CONTRIB=ON
+          cmake --build /tmp/rune-v27/hwy-build --target hwy_contrib --parallel 2
+      - name: Build comparator harness
+        run: |
+          g++ -std=c++20 -O3 -march=native -DNDEBUG -pthread -I. \
+            -I/tmp/rune-v27/cafs/include -I/tmp/rune-v27/ips4o -I/tmp/rune-v27/highway -I/tmp/rune-v27/xss/src \
+            experiments/v27-adaptive-msd/competition.cpp /tmp/rune-v27/hwy-build/libhwy_contrib.a /tmp/rune-v27/hwy-build/libhwy.a -latomic -o /tmp/rune-v27/competition
+      - name: Frozen exact-oracle matrix with chronological trials
+        run: |
+          set -euo pipefail
+          for n in 100000 1000000 4000000; do
+            /tmp/rune-v27/competition '${{ matrix.group }}' "$n" 5 5 | tee "v27-data/${{ matrix.group }}_$n.csv"
+          done
+          python3 experiments/v27-adaptive-msd/verify.py '${{ matrix.group }}' "$(uname -m)" v27-data
+      - name: Retain all results, including negatives and incomplete runs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rune-v27-${{ matrix.runner }}-${{ matrix.group }}
+          path: v27-data/
+          if-no-files-found: warn

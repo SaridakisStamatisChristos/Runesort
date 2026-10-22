@@ -1,0 +1,119 @@
+{
+  "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6",
+  "artifacts": [
+    {
+      "id": 12465560519,
+      "name": "rune-v27-ubuntu-24.04-arm-entropy",
+      "size_in_bytes": 72236,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12465560519",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12465560519/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:52:11Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:52:11Z",
+      "digest": "sha256:c94622e1d467510a94204c5d617b41646f3cc587d57e0540731a3ff279651a0b",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    },
+    {
+      "id": 12464951388,
+      "name": "rune-v27-ubuntu-24.04-arm-cardinality",
+      "size_in_bytes": 72146,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464951388",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464951388/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:50:38Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:50:38Z",
+      "digest": "sha256:733a846eb4d1229aff55430be1a0309e69f61d03fda6d98b9775ffe4faae11c0",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    },
+    {
+      "id": 12464847395,
+      "name": "rune-v27-ubuntu-24.04-cardinality",
+      "size_in_bytes": 87373,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464847395",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464847395/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:53:59Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:53:59Z",
+      "digest": "sha256:494a52e59e91cb1772496416ef521d4a48bc9cd76d631676bea8cb18b50ab573",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    },
+    {
+      "id": 12464832180,
+      "name": "rune-v27-ubuntu-24.04-entropy",
+      "size_in_bytes": 89574,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464832180",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464832180/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:56:52Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:56:52Z",
+      "digest": "sha256:fc0c3296665fef4763837baacc1f8c57c012857cb4438d03ac0bbcd65fd61f38",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    },
+    {
+      "id": 12464567468,
+      "name": "rune-v27-ubuntu-24.04-ordered",
+      "size_in_bytes": 64570,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464567468",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464567468/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:52:59Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:52:59Z",
+      "digest": "sha256:8333b9b3eeb01c9d54a1e9bfa95e586d0096e2c4c62af4ed99509635c8b608aa",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    },
+    {
+      "id": 12464118689,
+      "name": "rune-v27-ubuntu-24.04-arm-ordered",
+      "size_in_bytes": 54050,
+      "url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464118689",
+      "archive_download_url": "https://api.github.com/repos/SaridakisStamatisChristos/Runesort/actions/artifacts/12464118689/zip",
+      "expired": false,
+      "created_at": "2026-10-22T22:48:36Z",
+      "expires_at": "2027-01-20T22:43:29Z",
+      "updated_at": "2026-10-22T22:48:36Z",
+      "digest": "sha256:b55fc1d6bd23c35cc6b914fb7b2fdc17465207af9a55749c4d120877c1109cdd",
+      "workflow_run": {
+        "id": 39866998932,
+        "repository_id": 1426198460,
+        "head_repository_id": 1426198460,
+        "head_branch": "research/rune-v27-adaptive-msd-20261023",
+        "head_sha": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+      }
+    }
+  ]
+}

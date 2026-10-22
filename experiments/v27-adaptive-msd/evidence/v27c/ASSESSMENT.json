@@ -1,0 +1,593 @@
+{
+  "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6",
+  "observations": 10890,
+  "timed_sorts": 54450,
+  "verified_warmups": 10890,
+  "host_experiments": [
+    {
+      "isa": "x86_64",
+      "group": "entropy",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "rows": 2160,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    },
+    {
+      "isa": "x86_64",
+      "group": "cardinality",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "rows": 2160,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    },
+    {
+      "isa": "x86_64",
+      "group": "ordered",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "rows": 1620,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    },
+    {
+      "isa": "aarch64",
+      "group": "entropy",
+      "cpu": "Neoverse-N2",
+      "rows": 1800,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    },
+    {
+      "isa": "aarch64",
+      "group": "cardinality",
+      "cpu": "Neoverse-N2",
+      "rows": 1800,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    },
+    {
+      "isa": "aarch64",
+      "group": "ordered",
+      "cpu": "Neoverse-N2",
+      "rows": 1350,
+      "source": "8b926fdcabc78a9d426e09eb03fd533b9af622c6"
+    }
+  ],
+  "benefit_gates": [
+    {
+      "workload": "sparse17",
+      "n": 1000000,
+      "ratio": 0.14765175765451435,
+      "passed": true
+    },
+    {
+      "workload": "sparse17",
+      "n": 4000000,
+      "ratio": 0.1451658187431818,
+      "passed": true
+    },
+    {
+      "workload": "sparse20",
+      "n": 1000000,
+      "ratio": 0.22366435673858584,
+      "passed": true
+    },
+    {
+      "workload": "sparse20",
+      "n": 4000000,
+      "ratio": 0.17166501736233167,
+      "passed": true
+    }
+  ],
+  "regression_failures": [],
+  "integration_gate": "PASS",
+  "comparative_winning_cells": [
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 1000000,
+      "candidate_ms": 2.72943,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3846492611994008
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 4000000,
+      "candidate_ms": 9.982415,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.372203480936924
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 1000000,
+      "candidate_ms": 2.73727,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.38244497813488376
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 4000000,
+      "candidate_ms": 10.273952,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.372130153726982
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 100000,
+      "candidate_ms": 0.259807,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.4072723260627685
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 1000000,
+      "candidate_ms": 2.812099,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3955397457098125
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 4000000,
+      "candidate_ms": 10.055664,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.36718728725730315
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 100000,
+      "candidate_ms": 0.259234,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.41474815394474557
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 1000000,
+      "candidate_ms": 2.912825,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.40939529399032604
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 4000000,
+      "candidate_ms": 9.88256,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3675268111644763
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 100000,
+      "candidate_ms": 0.352552,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.5687111438038179
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 1000000,
+      "candidate_ms": 2.729622,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.35542419711981166
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 4000000,
+      "candidate_ms": 11.367368,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3110454381490261
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse20",
+      "n": 1000000,
+      "candidate_ms": 4.948849,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.6445850791649914
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "sparse20",
+      "n": 4000000,
+      "candidate_ms": 17.556422,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.4899787947968989
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 100000,
+      "candidate_ms": 0.252251,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.40064853609770384
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 1000000,
+      "candidate_ms": 2.874625,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.4005490257934274
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 4000000,
+      "candidate_ms": 10.481321,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.38318347881407555
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 100000,
+      "candidate_ms": 0.46606,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.3122824438784774
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 1000000,
+      "candidate_ms": 1.976033,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.15487710621815853
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 4000000,
+      "candidate_ms": 6.242839,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.1477098200176977
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 100000,
+      "candidate_ms": 0.4645,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.6030659532841716
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 1000000,
+      "candidate_ms": 1.984036,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.438213270818397
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 4000000,
+      "candidate_ms": 6.291782,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.3931723905021598
+    }
+  ],
+  "scope": "Only listed CPU/workload/size/pinned-competitor cells; not universal SOTA.",
+  "raw_sha256": {
+    "rune-v27-ubuntu-24.04-entropy/entropy_100000.csv": "a2c50a38a5a6169515bac5a075126ee5bdaa14da32e8873fc87c9c19fd997185",
+    "rune-v27-ubuntu-24.04-entropy/entropy_1000000.csv": "45b68d58920172f42276c932d10ba8977cba1015e5662cbd84aab15c61a2bd41",
+    "rune-v27-ubuntu-24.04-entropy/entropy_4000000.csv": "35844c67cd0bd00023988e7f2373342ce9eba717205e844bfff570e4e4f07439",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_100000.csv": "9e40cc99677849d9f7bb21e65e7b428129bfd2d6cb3aae65b9826ed279fe82a2",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_1000000.csv": "5e49cc164c9bb81bb657b94897d05a1004e37652c79af615ff40d1afe71a348b",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_4000000.csv": "c97cfa1e7536dfea2d07dae267b0df347766502c40093e9f1f39955b6c274507",
+    "rune-v27-ubuntu-24.04-ordered/ordered_100000.csv": "dd24424e8509986a66bdbfd77e008b92813f8987a2c3de68d92bc52f47840369",
+    "rune-v27-ubuntu-24.04-ordered/ordered_1000000.csv": "08a892d1d6a38dbfe5ea8e3283cc6fee973870b6b188e01b09995a0630fba2b2",
+    "rune-v27-ubuntu-24.04-ordered/ordered_4000000.csv": "85fe651a6bd85db5e8a62c2e2d46329fbeb0a5f871f3583651d9caa5dcc923ec",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_100000.csv": "bcd2271f61b3964fa9cc4c2cf4033e09114a36e0ecb30224255641a991cb7f2b",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_1000000.csv": "f863de4db0981be704616b8376f0c3bcccbbe991fd5c1cd9345d0f09e48fa61f",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_4000000.csv": "53e1682d9370a5ef303118a5c181d4c2d5d65575e14ccf8f1d90e82988c37e37",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_100000.csv": "542f7a888f57e4b66e0e6ab9e2baca37c8760e27963c83d6f30b0521ee65797d",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_1000000.csv": "11a02c23cf3bec3dd6912a149b78376cf50f3e31f4e138b676dbe29cf9363579",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_4000000.csv": "c3e9e6c3975607c5be66552e0d736ab96cb06bc1e1c3faa6f04e1d7225b4b293",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_100000.csv": "94af13eac10e15ce54627c33798744ef0b004425dc546ab74dea9b9b156ab553",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_1000000.csv": "a655922021ae155bde4b626baf7ae4cf3289c2c2972b7847ebd3527f91e104f3",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_4000000.csv": "656106d47f770d2aa24f92b71034fa449f14fb6ec55da3754a8fd487b64c1ee1"
+  }
+}

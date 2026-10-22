@@ -1,0 +1,635 @@
+{
+  "source": "bed42ed9f898908d08216f3e89e55259a313cedc",
+  "observations": 10890,
+  "timed_sorts": 54450,
+  "verified_warmups": 10890,
+  "host_experiments": [
+    {
+      "isa": "x86_64",
+      "group": "entropy",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "rows": 2160,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    },
+    {
+      "isa": "x86_64",
+      "group": "cardinality",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "rows": 2160,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    },
+    {
+      "isa": "x86_64",
+      "group": "ordered",
+      "cpu": "AMD EPYC 9V45 96-Core Processor",
+      "rows": 1620,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    },
+    {
+      "isa": "aarch64",
+      "group": "entropy",
+      "cpu": "Neoverse-N2",
+      "rows": 1800,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    },
+    {
+      "isa": "aarch64",
+      "group": "cardinality",
+      "cpu": "Neoverse-N2",
+      "rows": 1800,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    },
+    {
+      "isa": "aarch64",
+      "group": "ordered",
+      "cpu": "Neoverse-N2",
+      "rows": 1350,
+      "source": "bed42ed9f898908d08216f3e89e55259a313cedc"
+    }
+  ],
+  "benefit_gates": [
+    {
+      "workload": "sparse17",
+      "n": 1000000,
+      "ratio": 0.26293265103605246,
+      "passed": true
+    },
+    {
+      "workload": "sparse17",
+      "n": 4000000,
+      "ratio": 0.13827365756954163,
+      "passed": true
+    },
+    {
+      "workload": "sparse20",
+      "n": 1000000,
+      "ratio": 0.9031234399451171,
+      "passed": false
+    },
+    {
+      "workload": "sparse20",
+      "n": 4000000,
+      "ratio": 0.36106890048483314,
+      "passed": true
+    }
+  ],
+  "regression_failures": [],
+  "integration_gate": "HOLD",
+  "comparative_winning_cells": [
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 100000,
+      "candidate_ms": 0.61147,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.6264804721117987
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 1000000,
+      "candidate_ms": 2.345995,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.42551908120288884
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 4000000,
+      "candidate_ms": 7.309911,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.37921403208284504
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 100000,
+      "candidate_ms": 0.607994,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.6156457227063695
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 1000000,
+      "candidate_ms": 2.312783,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.42249873448568975
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 4000000,
+      "candidate_ms": 7.323573,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3736479471939974
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 100000,
+      "candidate_ms": 0.585662,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.5989491038379617
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 1000000,
+      "candidate_ms": 2.114985,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.38228706574206944
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16",
+      "n": 4000000,
+      "candidate_ms": 6.303656,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.326406905003745
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 100000,
+      "candidate_ms": 0.594659,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.6117350644447818
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 1000000,
+      "candidate_ms": 2.090088,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3836459051502838
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse16alt",
+      "n": 4000000,
+      "candidate_ms": 6.31175,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3259484914400167
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 100000,
+      "candidate_ms": 0.941727,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.854877619035972
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 1000000,
+      "candidate_ms": 2.886864,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.2660919426711516
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse17",
+      "n": 4000000,
+      "candidate_ms": 7.581249,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.13905753951941294
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse20",
+      "n": 1000000,
+      "candidate_ms": 8.766539,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.9031234399451171
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "sparse20",
+      "n": 4000000,
+      "candidate_ms": 18.229009,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.36106890048483314
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 100000,
+      "candidate_ms": 0.592214,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.6072593094928092
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 1000000,
+      "candidate_ms": 2.057827,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3749435776827597
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "group": "entropy",
+      "workload": "split16",
+      "n": 4000000,
+      "candidate_ms": 6.287175,
+      "comparators": [
+        "CAFS_pdq",
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort",
+        "x86_simd_sort"
+      ],
+      "worst_paired_ratio": 0.3244765262976161
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 100000,
+      "candidate_ms": 0.462342,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.31011286599954524
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 1000000,
+      "candidate_ms": 2.054267,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.15036830005044324
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "contig16",
+      "n": 4000000,
+      "candidate_ms": 7.194165,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.15985608495258474
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 100000,
+      "candidate_ms": 0.460365,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.6220679601068179
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 1000000,
+      "candidate_ms": 2.041073,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.46132926211765146
+    },
+    {
+      "isa": "aarch64",
+      "cpu": "Neoverse-N2",
+      "group": "entropy",
+      "workload": "random16",
+      "n": 4000000,
+      "candidate_ms": 7.158297,
+      "comparators": [
+        "IPS4o_seq",
+        "RUNE_v17",
+        "RUNE_v24",
+        "RUNE_v26b",
+        "VQSort",
+        "pdqsort",
+        "spreadsort",
+        "std_sort"
+      ],
+      "worst_paired_ratio": 0.42480624286158697
+    }
+  ],
+  "scope": "Only listed CPU/workload/size/pinned-competitor cells; not universal SOTA.",
+  "raw_sha256": {
+    "rune-v27-ubuntu-24.04-entropy/entropy_100000.csv": "6a983b73d86000d2847ea5516472fcd152779cb4af4b15240f1fba1df3a005ac",
+    "rune-v27-ubuntu-24.04-entropy/entropy_1000000.csv": "b3ecd3f24d2108cc3ed94a6afdcce044e5cfb24bc99ea9977fa6f55ca0b0e4bf",
+    "rune-v27-ubuntu-24.04-entropy/entropy_4000000.csv": "8282ec9d5f66901ec5f36ab745ba389a1424697c1681fdb36073b162c4285f1b",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_100000.csv": "5cf29023dd82d6cad54f94f741e39f344c28a88748e5bae1b88c2646c40bbab6",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_1000000.csv": "7363ef59f8cbd9a70d3f996f67182a4a524c727a19f86519fe02169601d1eec7",
+    "rune-v27-ubuntu-24.04-cardinality/cardinality_4000000.csv": "170df40b4a6113e1f2ea44f463ea2c822148e2f9e7eeee8ebd22968230c3da8a",
+    "rune-v27-ubuntu-24.04-ordered/ordered_100000.csv": "277e8bf2fd6e698973c775ef17a105c90a08339142a134a6f91e9d3b900d4def",
+    "rune-v27-ubuntu-24.04-ordered/ordered_1000000.csv": "77ea7e2792638f5c6fb2c7bdd13b5e4585c7c421ac2348cd373b983e898159c6",
+    "rune-v27-ubuntu-24.04-ordered/ordered_4000000.csv": "92d4f5e11b97da0ce416776e044bb9426c3d21996aaadd255f40a905090355d9",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_100000.csv": "b7f529b6471092f5d59c529a039d4a9d1973d1ea18352c8db7ad7c484b491f4e",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_1000000.csv": "605a3a81de5b5705c9257631cc85af0bb2e639da67b71e232a83cb0321154573",
+    "rune-v27-ubuntu-24.04-arm-entropy/entropy_4000000.csv": "53be4c6b654bafd09c7dd59f996706190551f35a3de000e66203fadbf6bc1f21",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_100000.csv": "f7dcec26a539ae407d8157f7395c7985aec455dd64e515fa9646237c6c7605b9",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_1000000.csv": "54c048e15768ae14ea9e532e572047b73bdbf00d5cde861fafbb58715df213ee",
+    "rune-v27-ubuntu-24.04-arm-cardinality/cardinality_4000000.csv": "69c8c5caf3a032082824a82bd0974e9319517c3e5e8e6668d36019cde0f2a60f",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_100000.csv": "06991b401026d680210368991bc3aa18a622b879453f2102e1dbd3286d52819f",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_1000000.csv": "ba74f7250366e23906edf24eb05f96418dc0abfa90571c2d0d90a365226a5467",
+    "rune-v27-ubuntu-24.04-arm-ordered/ordered_4000000.csv": "f86a1a65db5fe709a5c152b873c3f250c94dd308a860a18e1c0c6d2f7393bcf3"
+  }
+}
