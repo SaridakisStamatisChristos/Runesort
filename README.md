@@ -62,7 +62,7 @@ These are medians in milliseconds from one host; gate ratios are seed-paired.
 | 17 varying bits | 11.37 | 78.35 | 36.66 | 36.47 |
 | 20 varying bits | 17.56 | 102.45 | 35.74 | 36.53 |
 
-[Full source-specific verdict and raw evidence](https://github.com/SaridakisStamatisChristos/Runesort/blob/1bb9b40849d0ad5157a6843ed20e15784975208d/experiments/v27-adaptive-msd/FINAL_VERDICT.md).
+[Full source-specific verdict and raw evidence](https://github.com/SaridakisStamatisChristos/Runesort/blob/20870417c5f0be9f01347b91fdbe03ba1eb1dd29/experiments/v27-adaptive-msd/FINAL_VERDICT.md).
 
 Performance depends on CPU, input domain and size. Compact-domain gains do not
 establish unrestricted random64 leadership or universal SOTA. Counting sort,
